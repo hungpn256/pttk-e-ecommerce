@@ -1,16 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import styles from './styles';
+import { Button, Card, IconButton, InputBase, Paper } from '@material-ui/core';
+import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
-import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import LiveHelpIcon from '@material-ui/icons/LiveHelp';
-import cn from 'classname';
-import { Link } from 'react-router-dom';
-import { Button, IconButton, InputBase, Paper } from '@material-ui/core';
+import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import SearchIcon from '@material-ui/icons/Search';
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
+import cn from 'classname';
+import React, { useCallback, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import * as actionsProduct from './../../Actions/product';
 import Logo from './../../Assets/logo.png';
-const Header = () => {
+import ProductSearch from './../ProductSearch';
+import styles from './styles';
+const Header = ({ actionsProduct, listProductSearch }) => {
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
     top: 0,
@@ -39,6 +43,12 @@ const Header = () => {
     [y]
   );
 
+  const handleChange = (e) => {
+    const { searchProductName } = actionsProduct;
+    const { value } = e.target;
+    if (value.length > 0) searchProductName(value);
+  };
+
   useEffect(() => {
     setY(window.scrollY);
     window.addEventListener('scroll', handleNavigation);
@@ -47,6 +57,7 @@ const Header = () => {
       window.removeEventListener('scroll', handleNavigation);
     };
   }, [handleNavigation]);
+  const [display, setDisplay] = useState('none');
   const classes = styles();
   return (
     <div
@@ -98,10 +109,28 @@ const Header = () => {
           </div>
           <div className={classes.searchNav}>
             <Paper component="form" className={classes.searchForm}>
-              <InputBase className={classes.input} placeholder="Search product" />
+              <InputBase
+                className={classes.input}
+                placeholder="Search product"
+                onFocus={() => {
+                  setDisplay('block');
+                }}
+                onBlur={() => {
+                  setDisplay('none');
+                }}
+                onChange={handleChange}
+              />
               <IconButton type="submit" aria-label="search">
                 <SearchIcon />
               </IconButton>
+              <div style={{ display: display }} className={classes.listProductSearch}>
+                <Card className={classes.cardSearch}>
+                  {listProductSearch.map((product, index) => {
+                    return <ProductSearch product={product} />;
+                  })}
+                </Card>
+                {listProductSearch.length > 6 && <div className={classes.showAll}>xem tiếp</div>}
+              </div>
             </Paper>
           </div>
           <div className={classes.AddShoppingCart}>
@@ -114,5 +143,12 @@ const Header = () => {
     </div>
   );
 };
-
-export default Header;
+const mapDispatchToProps = (dispatch, actions) => {
+  return {
+    actionsProduct: bindActionCreators(actionsProduct, dispatch),
+  };
+};
+const mapStateToProps = (state) => ({
+  listProductSearch: state.product.listProductSearch,
+});
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

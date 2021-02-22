@@ -49,3 +49,8 @@ export const changeStates = (payload) => ({
   type: typesProduct.CHANGE_STATE,
   payload,
 });
+
+export const searchProductName = (payload) => ({
+  type: typesProduct.SEARCH_PRODUCT_NAME,
+  payload,
+});

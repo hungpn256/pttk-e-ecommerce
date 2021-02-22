@@ -13,6 +13,8 @@ interface IInitialState {
   record: IProduct | {};
   isLoadingProduct: boolean;
   isLoadingType: boolean;
+  listProductSearch: Array<IProduct>;
+  isSearching: boolean;
 }
 
 const initialState: IInitialState = {
@@ -27,6 +29,8 @@ const initialState: IInitialState = {
   record: {},
   isLoadingProduct: false,
   isLoadingType: false,
+  listProductSearch: [],
+  isSearching: false,
 };
 interface IAction {
   type: string;

@@ -60,6 +60,7 @@ const styles = makeStyles((theme) => ({
   },
   navBottom: { display: 'flex', justifyContent: 'space-around' },
   searchNav: {
+    position: 'relative',
     width: '70%',
   },
   input: {
@@ -85,6 +86,32 @@ const styles = makeStyles((theme) => ({
   AddShoppingCartIcon: {
     fontSize: 40,
     color: theme.color.textLight,
+  },
+  listProductSearch: {
+    position: 'absolute',
+    width: '93%',
+    backgroundColor: '#f3f3f3',
+    zIndex: 999,
+    top: '85%',
+    left: 0,
+    borderRadius: 5,
+    transition: 'opacity 1s ease-out',
+    maxHeight: 600,
+  },
+  cardSearch: {
+    maxHeight: 570,
+    overflow: 'auto',
+  },
+  showAll: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    height: 30,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 }));
 export default styles;

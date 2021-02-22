@@ -10,5 +10,8 @@ class ServicesProduct {
   getProductDetail = async (_id: string) => {
     return await axios.get(`${url}/product/${_id}`);
   };
+  searchProduct = async (payload: object) => {
+    return await axios.get(`${url}/product/search`, { params: { name: payload } });
+  };
 }
 export default new ServicesProduct();

@@ -62,7 +62,6 @@ const Home = ({
     };
   }, [paging]);
   const listProductCurrent = isLoadingProduct ? Array(24).fill({}) : listProduct;
-  debugger;
   const listImage = [
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },

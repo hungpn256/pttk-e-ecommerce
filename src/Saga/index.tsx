@@ -1,5 +1,5 @@
 import { toast } from 'react-toastify';
-import { call, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, delay, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as actionsProduct from './../Actions/product';
 import * as constantsProduct from './../Contants/product';
 import servicesProduct from './../Service/product';
@@ -54,9 +54,23 @@ function* fetchProductDetailSaga({ payload }) {
     toast.error(e.message);
   }
 }
+function* searchProductNameSaga({ payload }) {
+  try {
+    yield delay(500);
+    yield put(actionsProduct.changeStates({ isSearching: true }));
+    const res = yield call(servicesProduct.searchProduct, payload);
+    debugger;
+    yield put(actionsProduct.changeStates({ listProductSearch: res.data?.Products }));
+  } catch (e) {
+    toast.error(e.message);
+  } finally {
+    yield put(actionsProduct.changeStates({ isSearching: false }));
+  }
+}
 function* rootSaga() {
   yield takeLatest(constantsProduct.FETCH_PRODUCT, fetchProductListSaga);
   yield takeEvery(constantsProduct.FETCH_PRODUCT_TYPE, fetchProductListTypeSaga);
   yield takeEvery(constantsProduct.FETCH_PRODUCT_DETAIL, fetchProductDetailSaga);
+  yield takeLatest(constantsProduct.SEARCH_PRODUCT_NAME, searchProductNameSaga);
 }
 export default rootSaga;
