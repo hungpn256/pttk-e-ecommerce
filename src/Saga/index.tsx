@@ -2,8 +2,12 @@ import { call, delay, fork, put, select, take, takeEvery, takeLatest } from 'red
 import * as constantsProduct from './../Contants/product';
 import servicesProduct from './../Service/product';
 import * as actionsProduct from './../Actions/product';
-function* fetchProductListSaga() {
-  const res = yield call(servicesProduct.get, {});
+function* fetchProductListSaga({ payload }) {
+  let payloadCurrent = payload;
+  if (!payload) {
+    payloadCurrent = yield select((state) => state.product.paging);
+  }
+  const res = yield call(servicesProduct.get, payloadCurrent);
   const { Products, total } = res?.data;
   yield put({
     type: constantsProduct.FETCH_PRODUCT_SUCCESS,

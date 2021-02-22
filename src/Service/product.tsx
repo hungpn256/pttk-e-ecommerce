@@ -2,7 +2,7 @@ import axios from 'axios';
 import { url } from './../Configures/ip';
 class ServicesProduct {
   get = async (payload: object) => {
-    return await axios.get(`${url}/product`, payload);
+    return await axios.get(`${url}/product`, { params: payload });
   };
   getType = async (payload: object) => {
     return await axios.get(`${url}/product-type`, payload);

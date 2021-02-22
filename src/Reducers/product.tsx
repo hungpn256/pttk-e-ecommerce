@@ -8,6 +8,7 @@ interface IInitialState {
   paging: {
     limit: number;
     page: number;
+    cond: object;
   };
   record: IProduct | {};
 }
@@ -17,8 +18,9 @@ const initialState: IInitialState = {
   listProductType: [],
   total: 0,
   paging: {
-    limit: 20,
+    limit: 24,
     page: 1,
+    cond: {},
   },
   record: {},
 };

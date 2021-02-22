@@ -6,32 +6,34 @@ import Product from './../Product/index';
 import styles from './styles';
 interface IProductList {
   listProduct: Array<IProduct>;
-  limit: number;
+  total: number;
+  paging: {
+    limit: number;
+    page: number;
+    cond: any;
+  };
 }
-const ProductList = ({ listProduct, limit, total }: IProductList) => {
+const ProductList = ({ listProduct, total, onChangePage, paging }: IProductList) => {
   const classes = styles();
   function renderProducts(listProduct: Array<IProduct>) {
     return listProduct.map((product, index) => {
       return <Product product={product} key={index} />;
     });
   }
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPage(value);
-  };
-  const [page, setPage] = React.useState(1);
-  const listProductCurrent = listProduct.slice((page - 1) * limit, page * limit);
   return (
     <div>
       <Card>
         <CardHeader className={classes.title} component="h3" title="Sản phẩm"></CardHeader>
         <Divider />
-        <div className={classes.productList}>{renderProducts(listProductCurrent)}</div>
-        {listProduct.length > limit && (
+        <div className={classes.productList}>{renderProducts(listProduct)}</div>
+        {total > paging?.limit && (
           <Pagination
             className={classes.pagination}
-            count={Math.ceil(total / limit)}
-            page={page}
-            onChange={handleChange}
+            count={Math.ceil(total / paging?.limit)}
+            page={paging?.page ?? 1}
+            onChange={(event: React.ChangeEvent<unknown>, value: number) =>
+              onChangePage(event, value)
+            }
           />
         )}
       </Card>

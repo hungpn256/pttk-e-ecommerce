@@ -15,7 +15,15 @@ import * as producActions from './../../Actions/product';
 import styles from './styles';
 interface IHome {
   producActions: {
-    fetchProductList: () => { type: string; payload: object };
+    fetchProductList: ({
+      page,
+      limit,
+      cond,
+    }: {
+      page: number;
+      limit: number;
+      cond: any;
+    }) => { type: string; payload: object };
     fetchProductListType: () => { type: string; payload: object };
   };
   listProduct: Array<IProduct>;
@@ -24,12 +32,27 @@ interface IHome {
 }
 const Home = ({ producActions, listProduct, listProductType, total }: IHome) => {
   const classes = styles();
+
+  const [paging, setPaging] = React.useState({
+    page: 1,
+    limit: 24,
+    cond: {},
+  });
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    console.log(value);
+    setPaging({ ...paging, page: value });
+  };
   useEffect(() => {
-    const { fetchProductList, fetchProductListType } = producActions;
-    fetchProductList();
+    const { fetchProductListType } = producActions;
     fetchProductListType();
   }, []);
-  const limit = 24;
+  useEffect(() => {
+    const { fetchProductList, changeStates } = producActions;
+    fetchProductList(paging);
+    return () => {
+      changeStates({ listProduct: [] });
+    };
+  }, [paging]);
   const listImage = [
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
@@ -64,18 +87,42 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
         </div>
         <div className={classes.listProduct}>
           <ProductList
+            onChangePage={handleChangePage}
+            paging={paging}
             listProduct={
               listProduct.length > 0
                 ? listProduct
-                : [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+                : [
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                    {},
+                  ]
             }
-            limit={limit}
             total={total}
           />
         </div>
       </div>
-      <Divider height={10} />
-      <LoginPage />
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import * as typesProduct from './../Contants/product';
 import IProduct from './../Interfaces/product';
-export const fetchProductList = () => ({
+export const fetchProductList = (payload: any) => ({
   type: typesProduct.FETCH_PRODUCT,
-  payload: {},
+  payload,
 });
 
 export const fetchProductListSuccess = (listProduct: Array<IProduct>, total: number) => ({

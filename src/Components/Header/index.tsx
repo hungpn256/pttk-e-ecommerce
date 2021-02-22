@@ -92,7 +92,9 @@ const Header = () => {
         </div>
         <div className={classes.navBottom}>
           <div className={classes.wrapperLogo}>
-            <img className={classes.logo} src={Logo} alt="" />
+            <Link to="/">
+              <img className={classes.logo} src={Logo} alt="" />
+            </Link>
           </div>
           <div className={classes.searchNav}>
             <Paper component="form" className={classes.searchForm}>
