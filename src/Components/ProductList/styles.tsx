@@ -17,6 +17,12 @@ const styles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  empty: {
+    margin: 30,
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 }));
 
 export default styles;

@@ -29,8 +29,17 @@ interface IHome {
   listProduct: Array<IProduct>;
   listProductType: Array<IProductType> | Array<object>;
   total: number;
+  isLoadingProduct: boolean;
+  isLoadingType: boolean;
 }
-const Home = ({ producActions, listProduct, listProductType, total }: IHome) => {
+const Home = ({
+  producActions,
+  listProduct,
+  listProductType,
+  total,
+  isLoadingProduct,
+  isLoadingType,
+}: IHome) => {
   const classes = styles();
 
   const [paging, setPaging] = React.useState({
@@ -39,7 +48,6 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
     cond: {},
   });
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    console.log(value);
     setPaging({ ...paging, page: value });
   };
   useEffect(() => {
@@ -53,6 +61,8 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
       changeStates({ listProduct: [] });
     };
   }, [paging]);
+  const listProductCurrent = isLoadingProduct ? Array(24).fill({}) : listProduct;
+  debugger;
   const listImage = [
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
@@ -78,47 +88,14 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
         <div className={classes.listProductType}>
           <ProductTypeList
             lineNumber={2}
-            listProductType={
-              listProductType.length > 0
-                ? listProductType
-                : [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-            }
+            listProductType={!isLoadingType ? listProductType : Array(20).fill({})}
           />
         </div>
         <div className={classes.listProduct}>
           <ProductList
             onChangePage={handleChangePage}
             paging={paging}
-            listProduct={
-              listProduct.length > 0
-                ? listProduct
-                : [
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                    {},
-                  ]
-            }
+            listProduct={listProductCurrent}
             total={total}
           />
         </div>
@@ -127,10 +104,13 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
   );
 };
 const mapStateToProps = (state: any) => {
+  console.log(state);
   return {
     listProduct: state.product.listProduct,
     listProductType: state.product.listProductType,
     total: state.product.total,
+    isLoadingProduct: state.product.isLoadingProduct,
+    isLoadingType: state.product.isLoadingType,
   };
 };
 const mapDispatchToProps = (dispatch: any) => {

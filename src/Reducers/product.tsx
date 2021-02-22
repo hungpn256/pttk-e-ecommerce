@@ -11,6 +11,8 @@ interface IInitialState {
     cond: object;
   };
   record: IProduct | {};
+  isLoadingProduct: boolean;
+  isLoadingType: boolean;
 }
 
 const initialState: IInitialState = {
@@ -23,6 +25,8 @@ const initialState: IInitialState = {
     cond: {},
   },
   record: {},
+  isLoadingProduct: false,
+  isLoadingType: false,
 };
 interface IAction {
   type: string;

@@ -3,7 +3,7 @@ const theme = createMuiTheme({
   color: {
     textDark: '#000',
     textLight: '#fff',
-    background: 'rgb(0,129,255)',
+    background: '#1D98FF',
     background_linear_gradient: '#1D98FF',
   },
 });

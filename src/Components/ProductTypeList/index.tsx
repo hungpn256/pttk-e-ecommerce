@@ -9,8 +9,8 @@ const ProductTypeList = ({
   params,
 }: {
   listProductType: Array<IProductType>;
-  lineNumber: number;
-  params: { _id: string };
+  lineNumber?: number;
+  params?: { _id: string };
 }) => {
   const classes = styles();
   function renderProducts(listProductType: Array<IProductType>) {

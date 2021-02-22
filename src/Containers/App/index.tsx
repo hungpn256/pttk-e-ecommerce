@@ -1,9 +1,11 @@
 import { withStyles } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { ROUTES } from '../../Configures/routes';
 import storeConfigure from './../../Redux/storeConfigure';
 import styles from './styles';
@@ -43,6 +45,7 @@ function App() {
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <ToastContainer position="bottom-right" closeOnClick autoClose={2000} />
           {renderAdminRoutes()}
         </ThemeProvider>
       </BrowserRouter>
