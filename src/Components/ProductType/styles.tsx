@@ -32,6 +32,9 @@ const styles = makeStyles((theme) => ({
     textAlign: 'center',
     fontSize: 14,
   },
+  active: {
+    background: 'rgba(242,242,242,0.9)',
+  },
 }));
 
 export default styles;

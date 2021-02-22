@@ -1,6 +1,7 @@
-import { Card, CardContent, CardHeader, CardMedia, Grow } from '@material-ui/core';
+import { Card, CardMedia, Grow } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
-import React from 'react';
+import cn from 'classname';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './styles';
 export interface IProductType {
@@ -8,11 +9,23 @@ export interface IProductType {
   name: string;
   image: string;
 }
-const ProductTypes = ({ productType }: { productType: IProductType }) => {
+const ProductTypes = ({
+  productType,
+  params,
+}: {
+  productType: IProductType;
+  params: { _id: string };
+}) => {
   const classes = styles();
+  const idActive = params?._id ?? '';
   const { name, image, _id } = productType;
+  useEffect(() => {
+    if (idActive === _id) {
+      document.getElementById(_id)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, []);
   return (
-    <Card className={classes.productType}>
+    <Card className={cn(classes.productType, { [classes.active]: idActive === _id })} id={_id}>
       <Link to={`/product/type/${_id}`} className={classes.linkProductType}>
         <CardMedia className={classes.imageWrapper}>
           {image && name ? (

@@ -2,15 +2,25 @@ import cn from 'classname';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import CarouselComponent from '../../Components/Carousel';
 import ProductList from '../../Components/ProductList';
 import { IProductType } from '../../Components/ProductType';
 import ProductTypeList from '../../Components/ProductTypeList';
 import IProduct from '../../Interfaces/product';
 import * as producActions from './../../Actions/product';
 import styles from './styles';
+import { useParams } from 'react-router-dom';
 interface IHome {
   producActions: {
-    fetchProductList: () => { type: string; payload: object };
+    fetchProductList: ({
+      page,
+      limit,
+      cond,
+    }: {
+      page: number;
+      limit: number;
+      cond: any;
+    }) => { type: string; payload: object };
     fetchProductListType: () => { type: string; payload: object };
   };
   listProduct: Array<IProduct>;
@@ -19,12 +29,31 @@ interface IHome {
 }
 const Home = ({ producActions, listProduct, listProductType, total }: IHome) => {
   const classes = styles();
+  const params = useParams();
+  const [paging, setPaging] = React.useState({
+    page: 1,
+    limit: 24,
+    cond: {
+      ProductType: params._id,
+    },
+  });
+  const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPaging({ ...paging, page: value });
+  };
   useEffect(() => {
-    const { fetchProductList, fetchProductListType } = producActions;
-    fetchProductList();
+    const { fetchProductListType } = producActions;
     fetchProductListType();
   }, []);
-  const limit = 24;
+  useEffect(() => {
+    setPaging({ ...paging, page: 1, cond: { ...paging.cond, ProductType: params._id } });
+  }, [params]);
+  useEffect(() => {
+    const { fetchProductList, changeStates } = producActions;
+    fetchProductList(paging);
+    return () => {
+      changeStates({ listProduct: [] });
+    };
+  }, [paging]);
   const listImage = [
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
@@ -36,6 +65,7 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
       <div className={cn('container', classes.content)}>
         <div className={classes.listProductType}>
           <ProductTypeList
+            params={params}
             listProductType={
               listProductType.length > 0
                 ? listProductType
@@ -45,12 +75,9 @@ const Home = ({ producActions, listProduct, listProductType, total }: IHome) => 
         </div>
         <div className={classes.listProduct}>
           <ProductList
-            listProduct={
-              listProduct.length > 0
-                ? listProduct
-                : [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-            }
-            limit={limit}
+            onChangePage={handleChangePage}
+            paging={paging}
+            listProduct={listProduct.length > 0 ? listProduct : Array(24).fill({})}
             total={total}
           />
         </div>
