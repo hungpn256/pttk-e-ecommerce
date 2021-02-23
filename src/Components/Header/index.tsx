@@ -10,11 +10,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import IProduct from '../../Interfaces/product';
 import * as actionsProduct from './../../Actions/product';
 import Logo from './../../Assets/logo.png';
 import ProductSearch from './../ProductSearch';
 import styles from './styles';
-const Header = ({ actionsProduct, listProductSearch }) => {
+interface IHeader {
+  actionsProduct: {};
+  listProductSearch: Array<IProduct>;
+  isSearching: boolean;
+}
+const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => {
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
     top: 0,
@@ -150,5 +156,6 @@ const mapDispatchToProps = (dispatch, actions) => {
 };
 const mapStateToProps = (state) => ({
   listProductSearch: state.product.listProductSearch,
+  isSearching: state.product.isSearching,
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Header);

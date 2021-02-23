@@ -13,7 +13,7 @@ import IProduct from '../../Interfaces/product';
 import LoginPage from '../LoginPage';
 import * as producActions from './../../Actions/product';
 import styles from './styles';
-import MessengerCustomerChat from 'react-messenger-customer-chat';
+
 interface IHome {
   producActions: {
     fetchProductList: ({
@@ -100,7 +100,7 @@ const Home = ({
           />
         </div>
       </div>
-      <MessengerCustomerChat pageId="105600471535776" appId="530387607688652" />,
+      ,
     </div>
   );
 };
