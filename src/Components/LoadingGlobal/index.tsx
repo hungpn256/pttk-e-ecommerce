@@ -2,34 +2,12 @@ import React from 'react';
 import './styles.css';
 const LoadingGlobal = () => {
   return (
-    <div className="background-loading">
-      <div className="loadingio-spinner-spin-nnpo04smh7d">
-        <div className="ldio-76pi6fa0yn">
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-          <div>
-            <div></div>
-          </div>
-        </div>
+    <div class="loadingio-spinner-cube-iyczpfvbsun">
+      <div class="ldio-7ui6vzo1w0d">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
       </div>
     </div>
   );

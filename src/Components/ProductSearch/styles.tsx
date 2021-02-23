@@ -10,11 +10,14 @@ const styles = makeStyles((theme) => ({
     margin: 10,
   },
   name: {
-    margin: 10,
+    margin: '5px 0',
     display: '-wetkit-box',
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+  },
+  price: {
+    color: 'red',
   },
 }));
 

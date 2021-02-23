@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import IProduct from '../../Interfaces/product';
+import LoadingGlobal from '../LoadingGlobal';
 import * as actionsProduct from './../../Actions/product';
 import Logo from './../../Assets/logo.png';
 import ProductSearch from './../ProductSearch';
@@ -130,12 +131,30 @@ const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => 
                 <SearchIcon />
               </IconButton>
               <div style={{ display: display }} className={classes.listProductSearch}>
-                <Card className={classes.cardSearch}>
-                  {listProductSearch.map((product, index) => {
-                    return <ProductSearch product={product} />;
-                  })}
-                </Card>
-                {listProductSearch.length > 6 && <div className={classes.showAll}>xem tiếp</div>}
+                {isSearching ? (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '150px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <LoadingGlobal />
+                  </div>
+                ) : (
+                  <>
+                    <Card className={classes.cardSearch}>
+                      {listProductSearch.map((product, index) => {
+                        return <ProductSearch product={product} />;
+                      })}
+                    </Card>
+                    {listProductSearch.length > 6 && (
+                      <div className={classes.showAll}>Xem thêm &gt;&gt;&gt;&gt;</div>
+                    )}
+                  </>
+                )}
               </div>
             </Paper>
           </div>

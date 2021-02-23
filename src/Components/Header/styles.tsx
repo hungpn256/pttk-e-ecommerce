@@ -100,18 +100,22 @@ const styles = makeStyles((theme) => ({
   },
   cardSearch: {
     maxHeight: 570,
-    overflow: 'auto',
+    overflow: 'hidden',
   },
   showAll: {
     position: 'absolute',
     bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#fff',
+    left: 2,
+    right: 2,
+    backgroundColor: '#f0f0f0',
     height: 30,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 5,
+    '&:hover': {
+      color: 'red',
+    },
   },
 }));
 export default styles;

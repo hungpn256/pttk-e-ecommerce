@@ -59,7 +59,7 @@ function* searchProductNameSaga({ payload }) {
     yield delay(500);
     yield put(actionsProduct.changeStates({ isSearching: true }));
     const res = yield call(servicesProduct.searchProduct, payload);
-    debugger;
+
     yield put(actionsProduct.changeStates({ listProductSearch: res.data?.Products }));
   } catch (e) {
     toast.error(e.message);
