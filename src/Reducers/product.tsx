@@ -9,6 +9,7 @@ interface IInitialState {
     limit: number;
     page: number;
     cond: object;
+    search?: string;
   };
   record: IProduct | {};
   isLoadingProduct: boolean;
