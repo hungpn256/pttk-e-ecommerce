@@ -12,7 +12,12 @@ const ProductSearch = ({ product }) => {
   const { _id, name, image, price } = product;
   return (
     <Link to={`/product/detail/${_id}`} style={{ textDecoration: 'none' }}>
-      <Card className={classes.card}>
+      <Card
+        className={classes.card}
+        onClick={() => {
+          console.log('s');
+        }}
+      >
         <img className={classes.image} src={image} alt=""></img>
         <CardContent>
           <div className={classes.name}>{name}</div>

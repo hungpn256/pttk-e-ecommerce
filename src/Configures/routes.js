@@ -4,6 +4,7 @@ import LoginPage from '../Containers/LoginPage';
 import ProductDetail from '../Containers/ProductDetail';
 import ProductTypePage from '../Containers/ProductTypePage';
 import SignUpPage from '../Containers/SignUpPage';
+import testComponent from '../Containers/testComponent';
 import LayoutIncludeHeader from '../Layout/IncludeHeader';
 export const ROUTES = [
   {
@@ -39,6 +40,13 @@ export const ROUTES = [
     exact: true,
     component: SignUpPage,
   },
+  {
+    path: '/test',
+    name: 'test',
+    exact: true,
+    component: testComponent,
+  },
+
   // {
   //   path: '/',
   //   exact: false,

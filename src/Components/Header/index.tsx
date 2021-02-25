@@ -7,9 +7,8 @@ import NotificationsActiveIcon from '@material-ui/icons/NotificationsActive';
 import SearchIcon from '@material-ui/icons/Search';
 import cn from 'classname';
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
 import IProduct from '../../Interfaces/product';
 import LoadingGlobal from '../LoadingGlobal';
 import * as actionsProduct from './../../Actions/product';
@@ -17,11 +16,12 @@ import Logo from './../../Assets/logo.png';
 import ProductSearch from './../ProductSearch';
 import styles from './styles';
 interface IHeader {
-  actionsProduct: {};
   listProductSearch: Array<IProduct>;
   isSearching: boolean;
 }
-const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => {
+const Header = () => {
+  const { listProductSearch, isSearching }: IHeader = useSelector((state) => state.product);
+  const dispatch = useDispatch();
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
     top: 0,
@@ -53,7 +53,7 @@ const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => 
   const handleChange = (e) => {
     const { searchProductName } = actionsProduct;
     const { value } = e.target;
-    if (value.length > 0) searchProductName(value);
+    dispatch(searchProductName(value));
   };
 
   useEffect(() => {
@@ -123,7 +123,9 @@ const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => 
                   setDisplay('block');
                 }}
                 onBlur={() => {
-                  setDisplay('none');
+                  setTimeout(() => {
+                    setDisplay('none');
+                  }, 200);
                 }}
                 onChange={handleChange}
               />
@@ -168,13 +170,5 @@ const Header = ({ actionsProduct, listProductSearch, isSearching }: IHeader) => 
     </div>
   );
 };
-const mapDispatchToProps = (dispatch, actions) => {
-  return {
-    actionsProduct: bindActionCreators(actionsProduct, dispatch),
-  };
-};
-const mapStateToProps = (state) => ({
-  listProductSearch: state.product.listProductSearch,
-  isSearching: state.product.isSearching,
-});
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+
+export default Header;

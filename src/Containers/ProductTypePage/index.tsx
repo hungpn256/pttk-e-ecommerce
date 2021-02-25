@@ -1,43 +1,17 @@
 import cn from 'classname';
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import CarouselComponent from '../../Components/Carousel';
-import ProductList from '../../Components/ProductList';
-import { IProductType } from '../../Components/ProductType';
-import ProductTypeList from '../../Components/ProductTypeList';
-import IProduct from '../../Interfaces/product';
-import * as producActions from './../../Actions/product';
-import styles from './styles';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-interface IHome {
-  producActions: {
-    fetchProductList: ({
-      page,
-      limit,
-      cond,
-    }: {
-      page: number;
-      limit: number;
-      cond: any;
-    }) => { type: string; payload: object };
-    fetchProductListType: () => { type: string; payload: object };
-  };
-  listProduct: Array<IProduct>;
-  listProductType: Array<IProductType> | Array<object>;
-  total: number;
-  isLoadingProduct: boolean;
-  isLoadingType: boolean;
-}
-const Home = ({
-  producActions,
-  listProduct,
-  listProductType,
-  total,
-  isLoadingProduct,
-  isLoadingType,
-}: IHome) => {
+import ProductList from '../../Components/ProductList';
+import ProductTypeList from '../../Components/ProductTypeList';
+import styles from './styles';
+import * as producActions from '../../Actions/product';
+const Home = () => {
   const classes = styles();
+  const { listProduct, listProductType, total, isLoadingProduct, isLoadingType } = useSelector(
+    (state) => state.product
+  );
+  const dispatch = useDispatch();
   const params = useParams();
   const [paging, setPaging] = React.useState({
     page: 1,
@@ -51,16 +25,16 @@ const Home = ({
   };
   useEffect(() => {
     const { fetchProductListType } = producActions;
-    fetchProductListType();
+    dispatch(fetchProductListType());
   }, []);
   useEffect(() => {
     setPaging({ ...paging, page: 1, cond: { ...paging.cond, ProductType: params._id } });
   }, [params]);
   useEffect(() => {
     const { fetchProductList, changeStates } = producActions;
-    fetchProductList(paging);
+    dispatch(fetchProductList(paging));
     return () => {
-      changeStates({ listProduct: [] });
+      dispatch(changeStates({ listProduct: [] }));
     };
   }, [paging]);
   const listProductCurrent = isLoadingProduct ? Array(24).fill({}) : listProduct;
@@ -86,18 +60,4 @@ const Home = ({
     </div>
   );
 };
-const mapStateToProps = (state: any) => {
-  return {
-    listProduct: state.product.listProduct,
-    listProductType: state.product.listProductType,
-    total: state.product.total,
-    isLoadingProduct: state.product.isLoadingProduct,
-    isLoadingType: state.product.isLoadingType,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    producActions: bindActionCreators(producActions, dispatch),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

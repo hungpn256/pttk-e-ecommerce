@@ -5,17 +5,10 @@ import { Rating, Skeleton } from '@material-ui/lab';
 import cn from 'classname';
 import React, { useEffect, useState } from 'react';
 import NumberFormat from 'react-number-format';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
-import LoadingGlobal from '../../Components/LoadingGlobal';
-import IProduct from '../../Interfaces/product';
 import * as producActions from './../../Actions/product';
 import styles from './styles';
-interface Props {
-  producActions: { fetchProductDetail: (_id: string) => { type: string; payload: any } };
-  product: IProduct;
-}
 function NumberFormatCustom(props: NumberFormatCustomProps) {
   const { inputRef, onChange, ...other } = props;
 
@@ -37,8 +30,10 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
     />
   );
 }
-const ProductDetail = ({ producActions, product }: Props) => {
+const ProductDetail = () => {
   const classes = styles();
+  const product = useSelector((state) => state.product.record);
+  const dispatch = useDispatch();
   const params: { _id: string } = useParams();
   const { _id } = params;
   const [check, setCheck] = useState(false);
@@ -54,12 +49,12 @@ const ProductDetail = ({ producActions, product }: Props) => {
       behavior: 'smooth',
     });
     const { fetchProductDetail, changeStates } = producActions;
-    fetchProductDetail(_id);
+    dispatch(fetchProductDetail(_id));
     return () => {
       setCheck(false);
-      changeStates({ record: {} });
+      dispatch(changeStates({ record: {} }));
     };
-  }, []);
+  }, [params]);
   const format = function (number: number, n: number, x: number) {
     const re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
     return number.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
@@ -164,14 +159,4 @@ const ProductDetail = ({ producActions, product }: Props) => {
   );
 };
 
-const mapStateToProps = (state: any) => {
-  return {
-    product: state.product.record,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    producActions: bindActionCreators(producActions, dispatch),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetail);
+export default ProductDetail;

@@ -1,51 +1,21 @@
-import { Divider } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import cn from 'classname';
 import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import { useDispatch, useSelector } from 'react-redux';
 import CarouselComponent from '../../Components/Carousel';
-import Header from '../../Components/Header';
 import ProductList from '../../Components/ProductList';
-import { IProductType } from '../../Components/ProductType';
 import ProductTypeList from '../../Components/ProductTypeList';
-import IProduct from '../../Interfaces/product';
-import LoginPage from '../LoginPage';
 import * as producActions from './../../Actions/product';
 import styles from './styles';
 
-interface IHome {
-  producActions: {
-    fetchProductList: ({
-      page,
-      limit,
-      cond,
-    }: {
-      page: number;
-      limit: number;
-      cond: any;
-    }) => { type: string; payload: object };
-    fetchProductListType: () => { type: string; payload: object };
-  };
-  listProduct: Array<IProduct>;
-  listProductType: Array<IProductType> | Array<object>;
-  total: number;
-  isLoadingProduct: boolean;
-  isLoadingType: boolean;
-}
-const Home = ({
-  producActions,
-  listProduct,
-  listProductType,
-  total,
-  isLoadingProduct,
-  isLoadingType,
-}: IHome) => {
+const Home = () => {
   const classes = styles();
-
+  const dispatch = useDispatch();
+  const { listProduct, listProductType, total, isLoadingProduct, isLoadingType } = useSelector(
+    (state) => state.product
+  );
   const [paging, setPaging] = React.useState({
     page: 1,
-    limit: 24,
+    limit: 1000,
     cond: {},
   });
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -53,13 +23,13 @@ const Home = ({
   };
   useEffect(() => {
     const { fetchProductListType } = producActions;
-    fetchProductListType();
+    dispatch(fetchProductListType());
   }, []);
   useEffect(() => {
     const { fetchProductList, changeStates } = producActions;
-    fetchProductList(paging);
+    dispatch(fetchProductList(paging));
     return () => {
-      changeStates({ listProduct: [] });
+      dispatch(changeStates({ listProduct: [] }));
     };
   }, [paging]);
   const listProductCurrent = isLoadingProduct ? Array(24).fill({}) : listProduct;
@@ -104,19 +74,5 @@ const Home = ({
     </div>
   );
 };
-const mapStateToProps = (state: any) => {
-  console.log(state);
-  return {
-    listProduct: state.product.listProduct,
-    listProductType: state.product.listProductType,
-    total: state.product.total,
-    isLoadingProduct: state.product.isLoadingProduct,
-    isLoadingType: state.product.isLoadingType,
-  };
-};
-const mapDispatchToProps = (dispatch: any) => {
-  return {
-    producActions: bindActionCreators(producActions, dispatch),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+export default Home;
