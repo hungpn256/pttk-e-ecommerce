@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import IProduct from './../../Interfaces/product';
 import styles from './styles';
 import Lazy from 'react-lazyload';
+import cn from 'classname';
 interface ProductProps {
   product: IProduct;
 }
@@ -18,7 +19,10 @@ const Product = ({ product }: ProductProps) => {
   };
   return (
     <Lazy offset={100} height={200} once={true} placeholder={'...loading'}>
-      <Link className={classes.itemLink} to={`/product/detail/${product._id}`}>
+      <Link
+        className={cn(classes.itemLink, { [classes.disable]: !product._id })}
+        to={`/product/detail/${product._id}`}
+      >
         <Card className={classes.product}>
           {!image ? (
             <Skeleton variant="rect" className={classes.media} />

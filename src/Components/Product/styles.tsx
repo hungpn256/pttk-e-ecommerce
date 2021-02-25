@@ -44,6 +44,10 @@ const styles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: theme.color.textDark,
   },
+  disable: {
+    pointerEvents: 'none',
+    cursor: 'default',
+  },
 }));
 
 export default styles;

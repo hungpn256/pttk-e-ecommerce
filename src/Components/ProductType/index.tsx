@@ -25,8 +25,14 @@ const ProductTypes = ({
     }
   }, []);
   return (
-    <Card className={cn(classes.productType, { [classes.active]: idActive === _id })} id={_id}>
-      <Link to={`/product/type/${_id}`} className={classes.linkProductType}>
+    <Card
+      className={cn(classes.productType, {
+        [classes.active]: idActive === _id,
+        [classes.disable]: !productType._id,
+      })}
+      id={_id}
+    >
+      <Link className={cn(classes.linkProductType)} to={`/product/type/${_id}`}>
         <CardMedia className={classes.imageWrapper}>
           {image && name ? (
             <Grow in={true} timeout={500}>

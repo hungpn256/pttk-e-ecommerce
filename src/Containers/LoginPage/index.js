@@ -22,6 +22,7 @@ import Logo from './../../Assets/logo.png';
 class LoginPage extends Component {
   state = {
     password: '',
+    email: '',
     showPassword: false,
     showLogin: false,
   };
@@ -36,12 +37,13 @@ class LoginPage extends Component {
   handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  hung = (a, b) => {
-    a.preventDefault();
-    console.log(a.target[0]);
+  hung = (e) => {
+    e.preventDefault();
+    const { password, email } = this.state;
+    console.log(password, email);
   };
   render() {
-    const { password, showPassword, showLogin } = this.state;
+    const { password, showPassword, showLogin, email } = this.state;
     const { classes } = this.props;
     if (!showLogin) {
       return (
@@ -82,6 +84,9 @@ class LoginPage extends Component {
                   <TextField
                     id="email"
                     label="Email"
+                    name="email"
+                    value={email}
+                    onChange={this.handleChange('email')}
                     className={classes.textField}
                     fullWidth
                     margin="normal"

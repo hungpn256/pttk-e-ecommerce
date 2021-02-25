@@ -35,6 +35,10 @@ const styles = makeStyles((theme) => ({
   active: {
     background: 'rgba(242,242,242,0.9)',
   },
+  disable: {
+    pointerEvents: 'none',
+    cursor: 'default',
+  },
 }));
 
 export default styles;
