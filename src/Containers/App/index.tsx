@@ -3,7 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, useHistory } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ROUTES } from '../../Configures/routes';
@@ -26,10 +26,11 @@ function App() {
     });
   };
   const ComponentsLayout = ({ component: Component, layout: Layout, ...props }) => {
+    const history = useHistory();
     if (Layout) {
       return (
         <Route {...props}>
-          <Layout>
+          <Layout history={history}>
             <Component></Component>
           </Layout>
           <MessengerCustomerChat pageId="105600471535776" appId="530387607688652" />

@@ -1,4 +1,4 @@
-import { Button, Card, IconButton, InputBase, Paper } from '@material-ui/core';
+import { Button, Card, IconButton, InputBase, Menu, MenuItem, Paper } from '@material-ui/core';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -8,19 +8,26 @@ import SearchIcon from '@material-ui/icons/Search';
 import cn from 'classname';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import IProduct from '../../Interfaces/product';
 import LoadingGlobal from '../LoadingGlobal';
 import * as actionsProduct from './../../Actions/product';
+import * as actionsAuth from './../../Actions/authentication';
 import Logo from './../../Assets/logo.png';
 import ProductSearch from './../ProductSearch';
 import styles from './styles';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import qs from 'query-string';
 interface IHeader {
   listProductSearch: Array<IProduct>;
   isSearching: boolean;
 }
-const Header = () => {
-  const { listProductSearch, isSearching }: IHeader = useSelector((state) => state.product);
+const Header = ({ history }) => {
+  const { listProductSearch, isSearching, paging }: IHeader = useSelector((state) => state.product);
+  const user = useSelector((state) => state.user);
+  const [keyword, setKeyword] = useState('');
+  const { hasUser } = user;
   const dispatch = useDispatch();
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
@@ -53,7 +60,15 @@ const Header = () => {
   const handleChange = (e) => {
     const { searchProductName } = actionsProduct;
     const { value } = e.target;
+    setKeyword(value);
     dispatch(searchProductName(value));
+  };
+
+  const enterSearch = () => {
+    dispatch(actionsProduct.changeStates({ paging: { ...paging, search: keyword } }));
+    const searchPath = qs.stringify({ search: keyword });
+    console.log(searchPath);
+    history.push(`/products?${searchPath}`);
   };
 
   useEffect(() => {
@@ -66,6 +81,19 @@ const Header = () => {
   }, [handleNavigation]);
   const [display, setDisplay] = useState('none');
   const classes = styles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const logOut = () => {
+    dispatch(actionsAuth.changeStates({ user: {}, hasUser: false }));
+    history.push('/login');
+  };
   return (
     <div
       className={classes.header}
@@ -96,15 +124,46 @@ const Header = () => {
               <LiveHelpIcon className={classes.icon} />
               Trợ giúp
             </li>
-            <li className={cn(classes.item, classes.hasLineRight)}>
+            <li
+              className={cn(classes.item, classes.hasLineRight)}
+              style={{ display: !hasUser ? 'block' : 'none' }}
+            >
               <Link className={classes.itemLink} to="/login">
                 Đăng nhập
               </Link>
             </li>
-            <li className={classes.item}>
+            <li className={classes.item} style={{ display: !hasUser ? 'block' : 'none' }}>
               <Link className={classes.itemLink} to="/signup">
                 Đăng ký
               </Link>
+            </li>
+            <li
+              className={cn(classes.item)}
+              style={{ display: hasUser ? 'flex' : 'none', padding: 0, alignItems: 'flex-start' }}
+            >
+              <Link className={classes.itemLink} to="/heh">
+                <AccountCircleIcon
+                  className={classes.icon}
+                  style={{ fontSize: 25, padding: 0, margin: '0 2px' }}
+                />
+                <span>hung H</span>
+              </Link>
+              <ArrowDropDownIcon
+                className={classes.icon}
+                style={{ fontSize: 25, padding: 0, paddingTop: 5 }}
+                onClick={handleClick}
+              />
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem>Profile</MenuItem>
+                <MenuItem>My account</MenuItem>
+                <MenuItem onClick={logOut}>Logout</MenuItem>
+              </Menu>
             </li>
           </ul>
         </div>
@@ -125,11 +184,11 @@ const Header = () => {
                 onBlur={() => {
                   setTimeout(() => {
                     setDisplay('none');
-                  }, 200);
+                  }, 300);
                 }}
                 onChange={handleChange}
               />
-              <IconButton type="submit" aria-label="search">
+              <IconButton onClick={enterSearch} aria-label="search">
                 <SearchIcon />
               </IconButton>
               <div style={{ display: display }} className={classes.listProductSearch}>

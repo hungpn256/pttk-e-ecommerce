@@ -1,11 +1,9 @@
-import React, { Component } from 'react';
 import {
   Button,
   Card,
   CardContent,
-  Checkbox,
+  CircularProgress,
   FormControl,
-  FormControlLabel,
   IconButton,
   Input,
   InputAdornment,
@@ -14,14 +12,23 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import styles from './styles';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Favorite, FavoriteBorder, Visibility, VisibilityOff } from '@material-ui/icons';
+import { bindActionCreators, compose } from 'redux';
 import Footer from '../../Components/Footer';
 import Logo from './../../Assets/logo.png';
-class LoginPage extends Component {
+import styles from './styles';
+import * as actionsAuthen from '../../Actions/authentication';
+import cn from 'classname';
+class SignUp extends Component {
   state = {
+    phoneNumber: '',
     password: '',
+    firstName: '',
+    lastName: '',
+    username: '',
     showPassword: false,
     showLogin: false,
     cPassword: '',
@@ -39,11 +46,17 @@ class LoginPage extends Component {
   };
   hung = (a, b) => {
     a.preventDefault();
-    console.log(a.target[0]);
+    const { actionsAuthen } = this.props;
+    const { signup } = actionsAuthen;
+    const { firstName, lastName, username, cPassword, email, password, phoneNumber } = this.state;
+    if (cPassword === password) {
+      signup({ name: { firstName, lastName }, username, email, password, phoneNumber });
+    }
   };
   render() {
     const { password, showPassword, showLogin, cPassword } = this.state;
-    const { classes } = this.props;
+    const { classes, user } = this.props;
+    const { isLoading, hasUser } = user;
     if (!showLogin) {
       return (
         <img
@@ -76,18 +89,57 @@ class LoginPage extends Component {
           <div className={classes.login}>
             <Card style={{ background: 'transparent' }}>
               <CardContent>
-                <form onSubmit={this.hung}>
+                <form onSubmit={this.hung} id="signup">
                   <div className="text-xs-center pb-xs">
                     <Typography variant="caption">Đăng ký tài khoản</Typography>
                   </div>
+                  <div className={classes.fullName}>
+                    <TextField
+                      id="firstName"
+                      label="First name"
+                      className={classes.textField}
+                      onChange={this.handleChange('firstName')}
+                      style={{ width: '45%' }}
+                      margin="normal"
+                    ></TextField>
+                    <TextField
+                      id="lastName"
+                      label="Last name"
+                      className={classes.textField}
+                      onChange={this.handleChange('lastName')}
+                      style={{ width: '45%' }}
+                      margin="normal"
+                    ></TextField>
+                  </div>
+                  <TextField
+                    id="username"
+                    label="User name"
+                    className={classes.textField}
+                    onChange={this.handleChange('username')}
+                    fullWidth
+                    margin="normal"
+                  ></TextField>
                   <TextField
                     id="email"
                     label="Email"
                     className={classes.textField}
+                    onChange={this.handleChange('email')}
                     fullWidth
                     margin="normal"
                   ></TextField>
-                  <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
+                  <TextField
+                    id="phoneNumber"
+                    label="Phone number"
+                    className={classes.textField}
+                    onChange={this.handleChange('phoneNumber')}
+                    fullWidth
+                    margin="normal"
+                  ></TextField>
+                  <FormControl
+                    fullWidth
+                    className={classes.textField}
+                    style={{ marginBottom: 10, paddingBottom: 14, paddingTop: 15 }}
+                  >
                     <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
                     <Input
                       id="standard-adornment-password"
@@ -108,7 +160,7 @@ class LoginPage extends Component {
                     />
                   </FormControl>
                   <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
-                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+                    <InputLabel htmlFor="standard-adornment-password">Enter password</InputLabel>
                     <Input
                       id="standard-adornment-password"
                       type={showPassword ? 'text' : 'password'}
@@ -116,9 +168,21 @@ class LoginPage extends Component {
                       onChange={this.handleChange('cPassword')}
                     />
                   </FormControl>
-                  <Button variant="contained" color="primary" fullWidth type="submit">
-                    Sign Up
-                  </Button>
+                  <div className={classes.wrapper}>
+                    <Button
+                      variant="contained"
+                      style={{ width: '100%' }}
+                      color="primary"
+                      className={cn({
+                        [classes.buttonSuccess]: hasUser,
+                      })}
+                      disabled={isLoading}
+                      type="submit"
+                    >
+                      Sign up
+                    </Button>
+                    {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                  </div>
                   <div className="pt-1 text-md-center">
                     <Link to="/login">
                       <Button>Đã có tài khoản</Button>
@@ -135,4 +199,12 @@ class LoginPage extends Component {
   }
 }
 
-export default withStyles(styles)(LoginPage);
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actionsAuthen: bindActionCreators(actionsAuthen, dispatch),
+  };
+};
+export default compose(connect(mapStateToProps, mapDispatchToProps), withStyles(styles))(SignUp);

@@ -15,7 +15,7 @@ const Home = () => {
   );
   const [paging, setPaging] = React.useState({
     page: 1,
-    limit: 1000,
+    limit: 24,
     cond: {},
   });
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {

@@ -6,16 +6,16 @@ import { Card, CardHeader, Divider } from '@material-ui/core';
 const ProductTypeList = ({
   listProductType,
   lineNumber,
-  params,
+  paging,
 }: {
   listProductType: Array<IProductType>;
   lineNumber?: number;
-  params?: { _id: string };
+  paging: { cond: { ProductType?: string } };
 }) => {
   const classes = styles();
   function renderProducts(listProductType: Array<IProductType>) {
     return listProductType.map((productType, index) => {
-      return <ProductType productType={productType} key={index} params={params} />;
+      return <ProductType productType={productType} key={index} paging={paging} />;
     });
   }
   return (

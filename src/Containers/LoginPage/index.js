@@ -15,10 +15,15 @@ import {
   withStyles,
 } from '@material-ui/core';
 import styles from './styles';
-import { Link } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import { Favorite, FavoriteBorder, Visibility, VisibilityOff } from '@material-ui/icons';
 import Footer from '../../Components/Footer';
 import Logo from './../../Assets/logo.png';
+import { compose, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import * as actionsAuthen from '../../Actions/authentication';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import cn from 'classname';
 class LoginPage extends Component {
   state = {
     password: '',
@@ -26,6 +31,11 @@ class LoginPage extends Component {
     showPassword: false,
     showLogin: false,
   };
+  componentDidMount() {
+    const { history, user } = this.props;
+    const { hasUser } = user;
+    if (hasUser) history.push('/');
+  }
   handleChange = (prop) => (event) => {
     this.setState({ [prop]: event.target.value });
   };
@@ -37,12 +47,21 @@ class LoginPage extends Component {
   handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  hung = (e) => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const { password, email } = this.state;
-    console.log(password, email);
+    const { actionsAuthen } = this.props;
+    const { login } = actionsAuthen;
+    login({ password, email });
   };
   render() {
+    const { user, history } = this.props;
+    const { isLoading, hasUser } = user;
+    if (hasUser) {
+      setTimeout(() => {
+        history.push('/');
+      }, 1000);
+    }
     const { password, showPassword, showLogin, email } = this.state;
     const { classes } = this.props;
     if (!showLogin) {
@@ -77,7 +96,7 @@ class LoginPage extends Component {
           <div className={classes.login}>
             <Card style={{ background: 'transparent' }}>
               <CardContent>
-                <form onSubmit={this.hung}>
+                <form onSubmit={this.handleSubmit}>
                   <div className="text-xs-center pb-xs">
                     <Typography variant="caption">Đăng nhập để tiếp tục</Typography>
                   </div>
@@ -122,9 +141,21 @@ class LoginPage extends Component {
                     }
                     label="Nhớ tài khoản"
                   />
-                  <Button variant="contained" color="primary" fullWidth type="submit">
-                    Login
-                  </Button>
+                  <div className={classes.wrapper}>
+                    <Button
+                      variant="contained"
+                      style={{ width: '100%' }}
+                      color="primary"
+                      className={cn({
+                        [classes.buttonSuccess]: hasUser,
+                      })}
+                      disabled={isLoading}
+                      type="submit"
+                    >
+                      Login
+                    </Button>
+                    {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+                  </div>
                   <div className="pt-1 text-md-center">
                     <Link to="/signup">
                       <Button>Đăng ký tài khoản mới</Button>
@@ -140,5 +171,16 @@ class LoginPage extends Component {
     );
   }
 }
-
-export default withStyles(styles)(LoginPage);
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actionsAuthen: bindActionCreators(actionsAuthen, dispatch),
+  };
+};
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withStyles(styles),
+  withRouter
+)(LoginPage);

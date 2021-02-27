@@ -2,7 +2,7 @@ import NotFound from '../Components/NotFound';
 import Home from '../Containers/Home';
 import LoginPage from '../Containers/LoginPage';
 import ProductDetail from '../Containers/ProductDetail';
-import ProductTypePage from '../Containers/ProductTypePage';
+import ProductTypePage from '../Containers/ProductHasCond';
 import SignUpPage from '../Containers/SignUpPage';
 import testComponent from '../Containers/testComponent';
 import LayoutIncludeHeader from '../Layout/IncludeHeader';
@@ -22,9 +22,9 @@ export const ROUTES = [
     component: ProductDetail,
   },
   {
-    path: '/product/type/:_id',
+    path: '/products',
     name: 'Loại Sản phẩm',
-    exact: true,
+    exact: false,
     layout: LayoutIncludeHeader,
     component: ProductTypePage,
   },

@@ -11,13 +11,13 @@ export interface IProductType {
 }
 const ProductTypes = ({
   productType,
-  params,
+  paging,
 }: {
   productType: IProductType;
-  params: { _id: string };
+  paging: { cond: { ProductType?: string } };
 }) => {
   const classes = styles();
-  const idActive = params?._id ?? '';
+  const idActive = paging?.cond?.ProductType ?? '';
   const { name, image, _id } = productType;
   useEffect(() => {
     if (idActive === _id) {
@@ -32,7 +32,7 @@ const ProductTypes = ({
       })}
       id={_id}
     >
-      <Link className={cn(classes.linkProductType)} to={`/product/type/${_id}`}>
+      <Link className={cn(classes.linkProductType)} to={`/products?ProductType=${_id}`}>
         <CardMedia className={classes.imageWrapper}>
           {image && name ? (
             <Grow in={true} timeout={500}>
