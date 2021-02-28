@@ -1,18 +1,27 @@
 import { withStyles } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ThemeProvider } from '@material-ui/styles';
-import React from 'react';
-import { Provider } from 'react-redux';
+import React, { useEffect } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Route, useHistory } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ROUTES } from '../../Configures/routes';
-import storeConfigure from './../../Redux/storeConfigure';
+import axios from 'axios';
 import styles from './styles';
 import theme from './themes';
 import MessengerCustomerChat from 'react-messenger-customer-chat';
-const store = storeConfigure();
+
+import * as actionsAuth from '../../Actions/authentication';
+
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
+    console.log('getUser');
+    dispatch(actionsAuth.getUser());
+  }, []);
   const renderAdminRoutes = () => {
     return ROUTES.map((route, index) => {
       return (
@@ -44,15 +53,13 @@ function App() {
       );
   };
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <ToastContainer position="bottom-right" closeOnClick autoClose={2000} />
-          {renderAdminRoutes()}
-        </ThemeProvider>
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ToastContainer position="bottom-right" closeOnClick autoClose={2000} />
+        {renderAdminRoutes()}
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }
 

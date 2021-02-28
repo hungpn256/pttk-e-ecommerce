@@ -19,5 +19,8 @@ class ServicesProduct {
   signUp = async (payload: object) => {
     return await axios.post(`${url}/auth/signup`, payload);
   };
+  getUser = async () => {
+    return await axios.get(`${url}/auth/profile`);
+  };
 }
 export default new ServicesProduct();

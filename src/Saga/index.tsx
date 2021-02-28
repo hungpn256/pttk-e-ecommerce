@@ -1,10 +1,11 @@
 import { toast } from 'react-toastify';
 import { call, delay, put, select, takeEvery, takeLatest } from 'redux-saga/effects';
 import * as actionsProduct from './../Actions/product';
-import * as constantsProduct from './../Contants/product';
-import * as constantsAuthentication from './../Contants/authentication';
+import * as constantsProduct from '../Constants/product';
+import * as constantsAuthentication from '../Constants/authentication';
 import * as actionsAuthen from './../Actions/authentication';
 import servicesPublic from '../Service/public';
+import axios from 'axios';
 function* fetchProductListSaga({ payload }) {
   try {
     yield put(actionsProduct.changeStates({ isLoadingProduct: true }));
@@ -71,30 +72,49 @@ function* searchProductNameSaga({ payload }) {
   }
 }
 
-function* loginSaga({ payload }) {
+function* loginSaga({ payload }: { payload: any }) {
   try {
-    yield put(actionsAuthen.changeStates({ isLoading: true }));
+    yield put(actionsAuthen.showLoading());
     const res = yield call(servicesPublic.login, payload);
-    console.log(res.data);
-    if (res.data.token) {
-      yield put(actionsAuthen.changeStates({ hasUser: true }));
+    const token = res?.data?.token ?? '';
+    if (token) {
+      localStorage.setItem('token', token);
+      yield put(actionsAuthen.loginSuccess({ token }));
+      yield put(actionsAuthen.getUser());
     }
   } catch (e) {
+    yield put(actionsAuthen.loginFail(e));
     toast.error('Đăng nhập thất bại');
   } finally {
     yield delay(500);
-    yield put(actionsAuthen.changeStates({ isLoading: false }));
+    yield put(actionsAuthen.hideLoading());
   }
 }
 
 function* signUpSaga({ payload }) {
   try {
-    yield put(actionsAuthen.changeStates({ isLoading: true }));
+    yield put(actionsAuthen.showLoading());
     const res = yield call(servicesPublic.signUp, payload);
   } catch (e) {
     toast.error('Đăng kí thất bại');
   } finally {
-    yield put(actionsAuthen.changeStates({ isLoading: false }));
+    yield put(actionsAuthen.hideLoading());
+  }
+}
+function* getUserSaga() {
+  try {
+    yield put(actionsAuthen.showLoading());
+    axios.defaults.headers.common['Authorization'] = `Beare ${localStorage.getItem('token')}`;
+    const res = yield call(servicesPublic.getUser);
+    if (!!res.data.user) {
+      yield put(actionsAuthen.getUserSuccess(res.data));
+    } else {
+      yield put(actionsAuthen.getUserFail({ message: 'lỗi đăng nhập' }));
+    }
+  } catch (error) {
+    yield put(actionsAuthen.getUserFail(error));
+  } finally {
+    yield put(actionsAuthen.hideLoading());
   }
 }
 function* rootSaga() {
@@ -104,5 +124,6 @@ function* rootSaga() {
   yield takeLatest(constantsProduct.SEARCH_PRODUCT_NAME, searchProductNameSaga);
   yield takeLatest(constantsAuthentication.LOGIN, loginSaga);
   yield takeLatest(constantsAuthentication.SIGN_UP, signUpSaga);
+  yield takeLatest(constantsAuthentication.GET_USER, getUserSaga);
 }
 export default rootSaga;

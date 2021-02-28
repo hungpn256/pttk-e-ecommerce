@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import {
   Button,
   Card,
@@ -14,16 +13,17 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import styles from './styles';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { Favorite, FavoriteBorder, Visibility, VisibilityOff } from '@material-ui/icons';
+import cn from 'classname';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Link, Redirect, withRouter } from 'react-router-dom';
+import { bindActionCreators, compose } from 'redux';
+import * as actionsAuthen from '../../Actions/authentication';
 import Footer from '../../Components/Footer';
 import Logo from './../../Assets/logo.png';
-import { compose, bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
-import * as actionsAuthen from '../../Actions/authentication';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import cn from 'classname';
+import styles from './styles';
 class LoginPage extends Component {
   state = {
     password: '',
@@ -32,9 +32,9 @@ class LoginPage extends Component {
     showLogin: false,
   };
   componentDidMount() {
-    const { history, user } = this.props;
-    const { hasUser } = user;
-    if (hasUser) history.push('/');
+    const { history, auth } = this.props;
+    const { user, loginSuccess } = auth;
+    if (loginSuccess) window.location.reload();
   }
   handleChange = (prop) => (event) => {
     this.setState({ [prop]: event.target.value });
@@ -55,12 +55,14 @@ class LoginPage extends Component {
     login({ password, email });
   };
   render() {
-    const { user, history } = this.props;
-    const { isLoading, hasUser } = user;
-    if (hasUser) {
-      setTimeout(() => {
-        history.push('/');
-      }, 1000);
+    const { auth, history } = this.props;
+    const { isLoading, hasUser, user, loginSuccess, prePath } = auth;
+    // if (loginSuccess) {
+    //   history.push('/');
+    // }
+    console.log(history.location);
+    if (user) {
+      history.push(prePath);
     }
     const { password, showPassword, showLogin, email } = this.state;
     const { classes } = this.props;
@@ -172,7 +174,7 @@ class LoginPage extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  user: state.user,
+  auth: state.auth,
 });
 const mapDispatchToProps = (dispatch) => {
   return {

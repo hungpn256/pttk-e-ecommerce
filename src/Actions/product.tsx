@@ -1,4 +1,4 @@
-import * as typesProduct from './../Contants/product';
+import * as typesProduct from '../Constants/product';
 import IProduct from './../Interfaces/product';
 export const fetchProductList = (payload: any) => ({
   type: typesProduct.FETCH_PRODUCT,

@@ -15,28 +15,27 @@ const Home = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = qs.parse(location.search);
-  console.log(queryParams);
-  const { search, ...cond } = queryParams;
-  const [paging, setPaging] = React.useState({
-    page: 1,
-    limit: 24,
-    cond: {
-      ...cond,
-    },
-  });
+
+  const paging = useSelector((state) => state.product.paging);
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
-    setPaging({ ...paging, page: value });
+    dispatch(producActions.changeStates({ paging: { ...paging, page: value } }));
   };
   useEffect(() => {
-    setPaging({ ...paging, ...queryParams });
     const { fetchProductListType } = producActions;
     dispatch(fetchProductListType());
   }, []);
   useEffect(() => {
-    setPaging({ ...paging, cond: { ...cond } });
-    if (search) {
-      setPaging({ ...paging, search: search });
-    }
+    const { search, ...cond } = queryParams;
+    dispatch(
+      producActions.changeStates({
+        paging: {
+          page: 1,
+          limit: 24,
+          cond: { ...cond },
+          search: search,
+        },
+      })
+    );
   }, [location]);
   useEffect(() => {
     const { fetchProductList, changeStates } = producActions;

@@ -1,5 +1,5 @@
 import IProduct from '../Interfaces/product';
-import * as typeProducts from '../Contants/product';
+import * as typeProducts from '../Constants/product';
 import { IProductType } from '../Components/ProductType';
 interface IInitialState {
   listProduct: Array<IProduct>;

@@ -19,15 +19,17 @@ import styles from './styles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import qs from 'query-string';
+import product from '../../Reducers/product';
 interface IHeader {
   listProductSearch: Array<IProduct>;
   isSearching: boolean;
 }
 const Header = ({ history }) => {
   const { listProductSearch, isSearching, paging }: IHeader = useSelector((state) => state.product);
-  const user = useSelector((state) => state.user);
+  const auth = useSelector((state) => state.auth);
+  const product = useSelector((state) => state.product);
   const [keyword, setKeyword] = useState('');
-  const { hasUser } = user;
+  const { user, isLoading } = auth;
   const dispatch = useDispatch();
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
@@ -65,10 +67,10 @@ const Header = ({ history }) => {
   };
 
   const enterSearch = () => {
+    setKeyword('');
     dispatch(actionsProduct.changeStates({ paging: { ...paging, search: keyword } }));
-    const searchPath = qs.stringify({ search: keyword });
-    console.log(searchPath);
-    history.push(`/products?${searchPath}`);
+    const searchPath = keyword.length ? qs.stringify({ search: keyword }) : '';
+    history.push(`/products${searchPath.length ? `?${searchPath}` : ``}`);
   };
 
   useEffect(() => {
@@ -90,9 +92,8 @@ const Header = ({ history }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const logOut = () => {
-    dispatch(actionsAuth.changeStates({ user: {}, hasUser: false }));
-    history.push('/login');
+  const logOut = async () => {
+    dispatch(actionsAuth.logOut());
   };
   return (
     <div
@@ -126,27 +127,39 @@ const Header = ({ history }) => {
             </li>
             <li
               className={cn(classes.item, classes.hasLineRight)}
-              style={{ display: !hasUser ? 'block' : 'none' }}
+              style={{ display: !user ? 'block' : 'none' }}
             >
-              <Link className={classes.itemLink} to="/login">
+              <Link
+                onClick={() => {
+                  dispatch(actionsAuth.changeStates({ prePath: history.location.pathname }));
+                }}
+                className={classes.itemLink}
+                to="/login"
+              >
                 Đăng nhập
               </Link>
             </li>
-            <li className={classes.item} style={{ display: !hasUser ? 'block' : 'none' }}>
-              <Link className={classes.itemLink} to="/signup">
+            <li className={classes.item} style={{ display: !user ? 'block' : 'none' }}>
+              <Link
+                onClick={() => {
+                  dispatch(actionsAuth.changeStates({ prePath: history.location.pathname }));
+                }}
+                className={classes.itemLink}
+                to="/signup"
+              >
                 Đăng ký
               </Link>
             </li>
             <li
               className={cn(classes.item)}
-              style={{ display: hasUser ? 'flex' : 'none', padding: 0, alignItems: 'flex-start' }}
+              style={{ display: user ? 'flex' : 'none', padding: 0, alignItems: 'flex-start' }}
             >
               <Link className={classes.itemLink} to="/heh">
                 <AccountCircleIcon
                   className={classes.icon}
                   style={{ fontSize: 25, padding: 0, margin: '0 2px' }}
                 />
-                <span>hung H</span>
+                <span>{user && user?.name?.firstName}</span>
               </Link>
               <ArrowDropDownIcon
                 className={classes.icon}
@@ -178,6 +191,7 @@ const Header = ({ history }) => {
               <InputBase
                 className={classes.input}
                 placeholder="Search product"
+                value={keyword}
                 onFocus={() => {
                   setDisplay('block');
                 }}
