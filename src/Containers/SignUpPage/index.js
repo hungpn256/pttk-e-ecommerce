@@ -22,6 +22,7 @@ import Logo from './../../Assets/logo.png';
 import styles from './styles';
 import * as actionsAuthen from '../../Actions/authentication';
 import cn from 'classname';
+import { toast } from 'react-toastify';
 class SignUp extends Component {
   state = {
     phoneNumber: '',
@@ -44,13 +45,16 @@ class SignUp extends Component {
   handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  hung = (a, b) => {
-    a.preventDefault();
+  handleSignUp = (e, b) => {
+    e.preventDefault();
     const { actionsAuthen } = this.props;
     const { signup } = actionsAuthen;
     const { firstName, lastName, username, cPassword, email, password, phoneNumber } = this.state;
     if (cPassword === password) {
+      console.log('e');
       signup({ name: { firstName, lastName }, username, email, password, phoneNumber });
+    } else {
+      toast.error('mật khẩu chưa trùng khớp');
     }
   };
   render() {
@@ -59,7 +63,7 @@ class SignUp extends Component {
     const { isLoading, hasUser } = auth;
     return (
       <>
-        <form onSubmit={this.hung} id="signup">
+        <form onSubmit={this.handleSignUp} id="signup">
           <div className="text-xs-center pb-xs">
             <Typography variant="caption">Đăng ký tài khoản</Typography>
           </div>
@@ -108,7 +112,7 @@ class SignUp extends Component {
           <FormControl
             fullWidth
             className={classes.textField}
-            style={{ marginBottom: 10, paddingBottom: 14, paddingTop: 15 }}
+            style={{ margin: '15px 0', marginBottom: '22px' }}
           >
             <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
             <Input

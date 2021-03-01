@@ -94,13 +94,14 @@ function* loginSaga({ payload }: { payload: any }) {
 function* signUpSaga({ payload }) {
   try {
     yield put(actionsAuthen.showLoading());
+    console.log('start');
     const res = yield call(servicesPublic.signUp, payload);
-    if (res.data) {
+    if (res?.data) {
       yield put(actionsAuthen.signupSuccess(res.data));
       toast.success('Đăng ký thành công');
     }
   } catch (e) {
-    toast.error('Đăng kí thất bại');
+    toast.error(e?.response?.data?.message);
   } finally {
     yield put(actionsAuthen.hideLoading());
   }
@@ -127,7 +128,7 @@ function* rootSaga() {
   yield takeEvery(constantsProduct.FETCH_PRODUCT_DETAIL, fetchProductDetailSaga);
   yield takeLatest(constantsProduct.SEARCH_PRODUCT_NAME, searchProductNameSaga);
   yield takeLatest(constantsAuthentication.LOGIN, loginSaga);
-  yield takeLatest(constantsAuthentication.SIGN_UP, signUpSaga);
+  yield takeEvery(constantsAuthentication.SIGN_UP, signUpSaga);
   yield takeLatest(constantsAuthentication.GET_USER, getUserSaga);
 }
 export default rootSaga;
