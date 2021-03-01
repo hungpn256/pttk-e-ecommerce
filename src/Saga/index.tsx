@@ -95,6 +95,10 @@ function* signUpSaga({ payload }) {
   try {
     yield put(actionsAuthen.showLoading());
     const res = yield call(servicesPublic.signUp, payload);
+    if (res.data) {
+      yield put(actionsAuthen.signupSuccess(res.data));
+      toast.success('Đăng ký thành công');
+    }
   } catch (e) {
     toast.error('Đăng kí thất bại');
   } finally {

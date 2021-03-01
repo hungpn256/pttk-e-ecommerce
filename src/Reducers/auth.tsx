@@ -1,5 +1,5 @@
 import * as typesAuthentication from '../Constants/authentication';
-import axios from 'axios';
+
 interface IInitialState {}
 
 const initialState: IInitialState = {

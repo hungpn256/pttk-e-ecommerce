@@ -92,7 +92,8 @@ const Header = ({ history }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const logOut = async () => {
+  const logOut = () => {
+    setAnchorEl(null);
     dispatch(actionsAuth.logOut());
   };
   return (

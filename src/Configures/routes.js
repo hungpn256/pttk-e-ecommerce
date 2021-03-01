@@ -6,6 +6,7 @@ import ProductTypePage from '../Containers/ProductHasCond';
 import SignUpPage from '../Containers/SignUpPage';
 import testComponent from '../Containers/testComponent';
 import LayoutIncludeHeader from '../Layout/IncludeHeader';
+import AuthLayout from '../Layout/Authentication';
 export const ROUTES = [
   {
     path: '/',
@@ -32,12 +33,14 @@ export const ROUTES = [
     path: '/login',
     name: 'Đăng nhập',
     exact: true,
+    layout: AuthLayout,
     component: LoginPage,
   },
   {
     path: '/signup',
     name: 'Đăng Ký',
     exact: true,
+    layout: AuthLayout,
     component: SignUpPage,
   },
   {

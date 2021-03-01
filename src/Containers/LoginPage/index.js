@@ -81,94 +81,68 @@ class LoginPage extends Component {
     }
     return (
       <>
-        <div className={classes.headerLogin}>
-          <div className={classes.logoWrapper}>
-            <Link to={'/'}>
-              <img className={classes.logoImage} src={Logo} alt=""></img>
+        <form onSubmit={this.handleSubmit}>
+          <div className="text-xs-center pb-xs">
+            <Typography variant="caption">Đăng nhập để tiếp tục</Typography>
+          </div>
+          <TextField
+            id="email"
+            label="Email"
+            name="email"
+            value={email}
+            onChange={this.handleChange('email')}
+            className={classes.textField}
+            fullWidth
+            margin="normal"
+          ></TextField>
+          <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
+            <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
+            <Input
+              id="standard-adornment-password"
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={this.handleChange('password')}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={this.handleClickShowPassword}
+                    onMouseDown={this.handleMouseDownPassword}
+                  >
+                    {showPassword ? <Visibility /> : <VisibilityOff />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+          <FormControlLabel
+            className={classes.checkBox}
+            control={
+              <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} name="checkedH" />
+            }
+            label="Nhớ tài khoản"
+          />
+          <div className={classes.wrapper}>
+            <Button
+              variant="contained"
+              style={{ width: '100%' }}
+              color="primary"
+              className={cn({
+                [classes.buttonSuccess]: hasUser,
+              })}
+              disabled={isLoading}
+              type="submit"
+            >
+              Login
+            </Button>
+            {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+          </div>
+          <div className="pt-1 text-md-center">
+            <Link to="/signup">
+              <Button>Đăng ký tài khoản mới</Button>
             </Link>
-            <span className={classes.logoText}>Go SHopp Đăng nhập</span>
           </div>
-        </div>
-        <div className={classes.background}>
-          <img
-            src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
-            alt=""
-            className={classes.backgroundImage}
-          ></img>
-          <div className={classes.login}>
-            <Card style={{ background: 'transparent' }}>
-              <CardContent>
-                <form onSubmit={this.handleSubmit}>
-                  <div className="text-xs-center pb-xs">
-                    <Typography variant="caption">Đăng nhập để tiếp tục</Typography>
-                  </div>
-                  <TextField
-                    id="email"
-                    label="Email"
-                    name="email"
-                    value={email}
-                    onChange={this.handleChange('email')}
-                    className={classes.textField}
-                    fullWidth
-                    margin="normal"
-                  ></TextField>
-                  <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
-                    <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-                    <Input
-                      id="standard-adornment-password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={this.handleChange('password')}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={this.handleClickShowPassword}
-                            onMouseDown={this.handleMouseDownPassword}
-                          >
-                            {showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  <FormControlLabel
-                    className={classes.checkBox}
-                    control={
-                      <Checkbox
-                        icon={<FavoriteBorder />}
-                        checkedIcon={<Favorite />}
-                        name="checkedH"
-                      />
-                    }
-                    label="Nhớ tài khoản"
-                  />
-                  <div className={classes.wrapper}>
-                    <Button
-                      variant="contained"
-                      style={{ width: '100%' }}
-                      color="primary"
-                      className={cn({
-                        [classes.buttonSuccess]: hasUser,
-                      })}
-                      disabled={isLoading}
-                      type="submit"
-                    >
-                      Login
-                    </Button>
-                    {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-                  </div>
-                  <div className="pt-1 text-md-center">
-                    <Link to="/signup">
-                      <Button>Đăng ký tài khoản mới</Button>
-                    </Link>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-        <Footer />
+        </form>
       </>
     );
   }
