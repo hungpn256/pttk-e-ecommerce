@@ -23,6 +23,7 @@ import styles from './styles';
 import * as actionsAuthen from '../../Actions/authentication';
 import cn from 'classname';
 import { toast } from 'react-toastify';
+import * as H from './../../Helper/Validate';
 class SignUp extends Component {
   state = {
     phoneNumber: '',
@@ -30,9 +31,16 @@ class SignUp extends Component {
     firstName: '',
     lastName: '',
     username: '',
+    cPassword: '',
+    email: '',
+    phoneNumberHelper: '',
+    passwordHelper: '',
+    firstNameHelper: '',
+    lastNameHelper: '',
+    usernameHelper: '',
+    emailHelper: '',
     showPassword: false,
     showLogin: false,
-    cPassword: '',
   };
   handleChange = (prop) => (event) => {
     this.setState({ [prop]: event.target.value });
@@ -42,23 +50,68 @@ class SignUp extends Component {
     this.setState({ showPassword: !this.state.showPassword });
   };
 
-  handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+  // handleMouseDownPassword = (event) => {
+  //   event.preventDefault();
+  // };
   handleSignUp = (e, b) => {
     e.preventDefault();
     const { actionsAuthen } = this.props;
     const { signup } = actionsAuthen;
     const { firstName, lastName, username, cPassword, email, password, phoneNumber } = this.state;
-    if (cPassword === password) {
-      console.log('e');
-      signup({ name: { firstName, lastName }, username, email, password, phoneNumber });
-    } else {
-      toast.error('mật khẩu chưa trùng khớp');
+    let check = true;
+    if (H.isEmpty.check(firstName)) {
+      this.setState({ firstNameHelper: H.isEmpty.messenger });
+      check = false;
     }
+    if (H.isEmpty.check(lastName)) {
+      this.setState({ lastNameHelper: H.isEmpty.messenger });
+      check = false;
+    }
+    if (H.isEmpty.check(phoneNumber)) {
+      this.setState({ phoneNumberHelper: H.isEmpty.messenger });
+      check = false;
+    }
+    if (H.isEmpty.check(username)) {
+      this.setState({ usernameHelper: H.isEmpty.messenger });
+      check = false;
+    }
+    if (H.isEmpty.check(email)) {
+      this.setState({ emailHelper: H.isEmpty.messenger });
+      check = false;
+    } else {
+      if (!H.email.check(email)) {
+        this.setState({ emailHelper: H.email.messenger });
+        check = false;
+      }
+    }
+    if (H.isEmpty.check(password)) {
+      this.setState({ passwordHelper: H.isEmpty.messenger });
+      check = false;
+    } else {
+      if (H.min6.check(password)) {
+        this.setState({ passwordHelper: H.min6.messenger });
+        check = false;
+      } else if (cPassword !== password) {
+        this.setState({ passwordHelper: 'Password chưa trùng khớp' });
+        check = false;
+      }
+    }
+    if (check) signup({ name: { firstName, lastName }, username, email, password, phoneNumber });
   };
+
   render() {
-    const { password, showPassword, showLogin, cPassword } = this.state;
+    const {
+      password,
+      showPassword,
+      showLogin,
+      cPassword,
+      passwordHelper,
+      firstNameHelper,
+      lastNameHelper,
+      emailHelper,
+      phoneNumberHelper,
+      usernameHelper,
+    } = this.state;
     const { classes, auth } = this.props;
     const { isLoading, hasUser } = auth;
     return (
@@ -70,7 +123,11 @@ class SignUp extends Component {
           <div className={classes.fullName}>
             <TextField
               id="firstName"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{firstNameHelper}</span>
+              }
               label="First name"
+              variant="outlined"
               className={classes.textField}
               onChange={this.handleChange('firstName')}
               style={{ width: '45%' }}
@@ -78,7 +135,11 @@ class SignUp extends Component {
             ></TextField>
             <TextField
               id="lastName"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{lastNameHelper}</span>
+              }
               label="Last name"
+              variant="outlined"
               className={classes.textField}
               onChange={this.handleChange('lastName')}
               style={{ width: '45%' }}
@@ -87,6 +148,10 @@ class SignUp extends Component {
           </div>
           <TextField
             id="username"
+            helperText={
+              <span style={{ color: 'red', position: 'absolute' }}>{usernameHelper}</span>
+            }
+            variant="outlined"
             label="User name"
             className={classes.textField}
             onChange={this.handleChange('username')}
@@ -95,6 +160,8 @@ class SignUp extends Component {
           ></TextField>
           <TextField
             id="email"
+            helperText={<span style={{ color: 'red', position: 'absolute' }}>{emailHelper}</span>}
+            variant="outlined"
             label="Email"
             className={classes.textField}
             onChange={this.handleChange('email')}
@@ -103,45 +170,59 @@ class SignUp extends Component {
           ></TextField>
           <TextField
             id="phoneNumber"
+            helperText={
+              <span style={{ color: 'red', position: 'absolute' }}>{phoneNumberHelper}</span>
+            }
+            variant="outlined"
             label="Phone number"
             className={classes.textField}
             onChange={this.handleChange('phoneNumber')}
             fullWidth
             margin="normal"
           ></TextField>
-          <FormControl
-            fullWidth
-            className={classes.textField}
-            style={{ margin: '15px 0', marginBottom: '22px' }}
-          >
-            <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-            <Input
+          <div style={{ position: 'relative' }}>
+            <TextField
+              variant="outlined"
+              name="password"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{passwordHelper}</span>
+              }
+              label="Password"
               id="standard-adornment-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={this.handleChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                    onMouseDown={this.handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-          <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
-            <InputLabel htmlFor="standard-adornment-password">Enter password</InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={showPassword ? 'text' : 'password'}
-              value={cPassword}
-              onChange={this.handleChange('cPassword')}
-            />
-          </FormControl>
+              className={classes.textField}
+              fullWidth
+              margin="normal"
+            ></TextField>
+            <IconButton
+              style={{ position: 'absolute', bottom: '15px', right: 0 }}
+              // onClick={this.handleClickShowPassword}
+              onMouseDown={() => {
+                this.setState({ showPassword: !this.state.showPassword });
+              }}
+              onMouseUp={() => {
+                this.setState({ showPassword: !this.state.showPassword });
+              }}
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </div>
+
+          <TextField
+            variant="outlined"
+            name="cpassword"
+            label="Enter Password"
+            id="enter-password"
+            type={showPassword ? 'text' : 'password'}
+            value={cPassword}
+            onChange={this.handleChange('cPassword')}
+            className={classes.textField}
+            fullWidth
+            margin="normal"
+          ></TextField>
+
           <div className={classes.wrapper}>
             <Button
               variant="contained"

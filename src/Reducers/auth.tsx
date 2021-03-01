@@ -56,8 +56,8 @@ const reducer = (state = { ...initialState }, action: IAction) => {
     }
     //log out
     case typesAuthentication.LOG_OUT: {
-      localStorage.removeItem('token');
       window.location.reload();
+      localStorage.removeItem('token');
       return { ...initialState };
     }
     default: {

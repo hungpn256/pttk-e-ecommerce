@@ -1,35 +1,37 @@
 import {
   Button,
-  Card,
-  CardContent,
   Checkbox,
-  FormControl,
   FormControlLabel,
   IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
   TextField,
   Typography,
   withStyles,
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Favorite, FavoriteBorder, Visibility, VisibilityOff } from '@material-ui/icons';
+import {
+  Favorite,
+  FavoriteBorder,
+  TransferWithinAStationSharp,
+  Visibility,
+  VisibilityOff,
+} from '@material-ui/icons';
 import cn from 'classname';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link, Redirect, withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import * as actionsAuthen from '../../Actions/authentication';
-import Footer from '../../Components/Footer';
-import Logo from './../../Assets/logo.png';
 import styles from './styles';
+import * as _ from 'lodash';
+import * as H from '../../Helper/Validate';
 class LoginPage extends Component {
   state = {
     password: '',
     email: '',
     showPassword: false,
     showLogin: false,
+    passwordHelper: '',
+    emailHelper: '',
   };
   componentDidMount() {
     const { history, auth } = this.props;
@@ -37,7 +39,7 @@ class LoginPage extends Component {
     if (loginSuccess) window.location.reload();
   }
   handleChange = (prop) => (event) => {
-    this.setState({ [prop]: event.target.value });
+    this.setState({ [prop]: event.target.value, [prop + 'Helper']: '' });
   };
 
   handleClickShowPassword = () => {
@@ -52,19 +54,34 @@ class LoginPage extends Component {
     const { password, email } = this.state;
     const { actionsAuthen } = this.props;
     const { login } = actionsAuthen;
-    login({ password, email });
+    let check = true;
+    if (H.isEmpty.check(email)) {
+      this.setState({ emailHelper: H.isEmpty.messenger });
+      check = false;
+    } else {
+      if (!H.email.check(email)) {
+        this.setState({ emailHelper: H.email.messenger });
+        check = false;
+      }
+    }
+    if (H.isEmpty.check(password)) {
+      this.setState({ passwordHelper: H.isEmpty.messenger });
+      check = false;
+    } else {
+      if (H.min6.check(password)) {
+        this.setState({ passwordHelper: H.min6.messenger });
+        check = false;
+      }
+    }
+    if (check) login({ password, email });
   };
   render() {
     const { auth, history } = this.props;
-    const { isLoading, hasUser, user, loginSuccess, prePath } = auth;
-    // if (loginSuccess) {
-    //   history.push('/');
-    // }
-    console.log(history.location);
+    const { isLoading, hasUser, user, prePath } = auth;
     if (user) {
       history.push(prePath);
     }
-    const { password, showPassword, showLogin, email } = this.state;
+    const { password, showPassword, showLogin, email, passwordHelper, emailHelper } = this.state;
     const { classes } = this.props;
     if (!showLogin) {
       return (
@@ -81,11 +98,13 @@ class LoginPage extends Component {
     }
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} autoComplete={false}>
           <div className="text-xs-center pb-xs">
             <Typography variant="caption">Đăng nhập để tiếp tục</Typography>
           </div>
           <TextField
+            variant="outlined"
+            helperText={<span style={{ color: 'red', position: 'absolute' }}>{emailHelper}</span>}
             id="email"
             label="Email"
             name="email"
@@ -95,26 +114,36 @@ class LoginPage extends Component {
             fullWidth
             margin="normal"
           ></TextField>
-          <FormControl fullWidth className={classes.textField} style={{ marginBottom: 10 }}>
-            <InputLabel htmlFor="standard-adornment-password">Password</InputLabel>
-            <Input
+          <div style={{ position: 'relative' }}>
+            <TextField
+              variant="outlined"
+              name="password"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{passwordHelper}</span>
+              }
+              label="Password"
               id="standard-adornment-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={this.handleChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                    onMouseDown={this.handleMouseDownPassword}
-                  >
-                    {showPassword ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+              className={classes.textField}
+              fullWidth
+              margin="normal"
+            ></TextField>
+            <IconButton
+              style={{ position: 'absolute', bottom: '15px', right: 0 }}
+              aria-label="toggle password visibility"
+              // onClick={this.handleClickShowPassword}
+              onMouseDown={() => {
+                this.setState({ showPassword: !this.state.showPassword });
+              }}
+              onMouseUp={() => {
+                this.setState({ showPassword: !this.state.showPassword });
+              }}
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </div>
           <FormControlLabel
             className={classes.checkBox}
             control={
