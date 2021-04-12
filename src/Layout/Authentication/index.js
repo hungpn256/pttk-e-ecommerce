@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Footer from '../../Components/Footer';
 import Logo from './../../Assets/logo.png';
 import styles from './styles';
+import backgroundAuth from '../../Assets/background.jpg';
 class AuthLayout extends Component {
   state = {
     showLogin: false,
@@ -16,7 +17,7 @@ class AuthLayout extends Component {
       return (
         <img
           style={{ display: 'none' }}
-          src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
+          src={backgroundAuth}
           alt=""
           className={classes.backgroundImage}
           onLoad={() => {
@@ -36,11 +37,7 @@ class AuthLayout extends Component {
           </div>
         </div>
         <div className={classes.background}>
-          <img
-            src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
-            alt=""
-            className={classes.backgroundImage}
-          ></img>
+          <img src={backgroundAuth} alt="" className={classes.backgroundImage}></img>
           <div className={classes.login}>
             <Card style={{ background: 'transparent' }}>
               <CardContent>{children}</CardContent>

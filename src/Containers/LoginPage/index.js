@@ -83,19 +83,19 @@ class LoginPage extends Component {
     }
     const { password, showPassword, showLogin, email, passwordHelper, emailHelper } = this.state;
     const { classes } = this.props;
-    if (!showLogin) {
-      return (
-        <img
-          style={{ display: 'none' }}
-          src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
-          alt=""
-          className={classes.backgroundImage}
-          onLoad={() => {
-            this.setState({ showLogin: true });
-          }}
-        ></img>
-      );
-    }
+    // if (!showLogin) {
+    //   return (
+    //     <img
+    //       style={{ display: 'none' }}
+    //       src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
+    //       alt=""
+    //       className={classes.backgroundImage}
+    //       onLoad={() => {
+    //         this.setState({ showLogin: true });
+    //       }}
+    //     ></img>
+    //   );
+    // }
     return (
       <>
         <form onSubmit={this.handleSubmit} autoComplete={false}>

@@ -63,7 +63,6 @@ function* searchProductNameSaga({ payload }) {
     yield put(actionsProduct.changeStates({ isSearching: true }));
     const paging = yield select((state) => state.product.paging);
     const res = yield call(servicesPublic.get, { ...paging, search: payload });
-
     yield put(actionsProduct.changeStates({ listProductSearch: res.data?.Products }));
   } catch (e) {
     toast.error(e.message);
@@ -76,10 +75,11 @@ function* loginSaga({ payload }: { payload: any }) {
   try {
     yield put(actionsAuthen.showLoading());
     const res = yield call(servicesPublic.login, payload);
-    const token = res?.data?.token ?? '';
-    if (token) {
-      localStorage.setItem('token', token);
-      yield put(actionsAuthen.loginSuccess({ token }));
+    const user = res?.data?.data ?? '';
+    debugger;
+    if (user) {
+      // localStorage.setItem('token', token);
+      yield put(actionsAuthen.loginSuccess({ user }));
       yield put(actionsAuthen.getUser());
     }
   } catch (e) {

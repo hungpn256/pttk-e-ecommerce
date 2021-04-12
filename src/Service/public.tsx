@@ -14,7 +14,7 @@ class ServicesProduct {
     return await axios.get(`${url}/product/search`, { params: { name: payload } });
   };
   login = async (payload: object) => {
-    return await axios.post(`${url}/auth/signin`, payload);
+    return await axios.post(`${url}/api/auth/login/`, payload);
   };
   signUp = async (payload: object) => {
     return await axios.post(`${url}/auth/signup`, payload);

@@ -29,6 +29,7 @@ const reducer = (state = { ...initialState }, action: IAction) => {
     //login
     case typesAuthentication.LOGIN_SUCCESS: {
       const { payload } = action;
+      debugger;
       // axios.defaults.headers.common['Authorization'] = `Bearer ${payload.token}`;
       return {
         ...state,
