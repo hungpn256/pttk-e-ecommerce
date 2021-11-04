@@ -7,6 +7,8 @@ import SignUpPage from '../Containers/SignUpPage';
 import testComponent from '../Containers/testComponent';
 import LayoutIncludeHeader from '../Layout/IncludeHeader';
 import AuthLayout from '../Layout/Authentication';
+import Cart from '../Containers/Cart';
+import Order from '../Containers/Order';
 export const ROUTES = [
   {
     path: '/',
@@ -28,6 +30,20 @@ export const ROUTES = [
     exact: false,
     layout: LayoutIncludeHeader,
     component: ProductTypePage,
+  },
+  {
+    path: '/cart',
+    name: 'Loại Sản phẩm',
+    exact: false,
+    layout: LayoutIncludeHeader,
+    component: Cart,
+  },
+  {
+    path: '/order',
+    name: 'Loại Sản phẩm',
+    exact: false,
+    layout: LayoutIncludeHeader,
+    component: Order,
   },
   {
     path: '/login',

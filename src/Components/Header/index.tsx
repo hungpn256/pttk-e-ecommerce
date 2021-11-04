@@ -235,9 +235,9 @@ const Header = ({ history }) => {
             </Paper>
           </div>
           <div className={classes.AddShoppingCart}>
-            <Button>
+            <Link to="/cart">
               <AddShoppingCartIcon className={classes.AddShoppingCartIcon} />
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
