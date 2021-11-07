@@ -27,7 +27,7 @@ import * as H from '../../Helper/Validate';
 class LoginPage extends Component {
   state = {
     password: '',
-    email: '',
+    username: '',
     showPassword: false,
     showLogin: false,
     passwordHelper: '',
@@ -35,7 +35,7 @@ class LoginPage extends Component {
   };
   componentDidMount() {
     const { history, auth } = this.props;
-    const { user, loginSuccess } = auth;
+    const { customer, loginSuccess } = auth;
     if (loginSuccess) window.location.reload();
   }
   handleChange = (prop) => (event) => {
@@ -51,37 +51,37 @@ class LoginPage extends Component {
   };
   handleSubmit = (e) => {
     e.preventDefault();
-    const { password, email } = this.state;
+    const { password, username } = this.state;
     const { actionsAuthen } = this.props;
     const { login } = actionsAuthen;
     let check = true;
-    if (H.isEmpty.check(email)) {
-      this.setState({ emailHelper: H.isEmpty.messenger });
-      check = false;
-    } else {
-      if (!H.email.check(email)) {
-        this.setState({ emailHelper: H.email.messenger });
-        check = false;
-      }
-    }
-    if (H.isEmpty.check(password)) {
-      this.setState({ passwordHelper: H.isEmpty.messenger });
-      check = false;
-    } else {
-      if (H.min6.check(password)) {
-        this.setState({ passwordHelper: H.min6.messenger });
-        check = false;
-      }
-    }
-    if (check) login({ password, email });
+    // if (H.isEmpty.check(email)) {
+    //   this.setState({ emailHelper: H.isEmpty.messenger });
+    //   check = false;
+    // } else {
+    //   if (!H.email.check(email)) {
+    //     this.setState({ emailHelper: H.email.messenger });
+    //     check = false;
+    //   }
+    // }
+    // if (H.isEmpty.check(password)) {
+    //   this.setState({ passwordHelper: H.isEmpty.messenger });
+    //   check = false;
+    // } else {
+    //   if (H.min6.check(password)) {
+    //     this.setState({ passwordHelper: H.min6.messenger });
+    //     check = false;
+    //   }
+    // }
+    if (check) login({ password, username });
   };
   render() {
     const { auth, history } = this.props;
-    const { isLoading, hasUser, user, prePath } = auth;
-    if (user) {
+    const { isLoading, hasUser, customer, prePath } = auth;
+    if (customer) {
       history.push(prePath);
     }
-    const { password, showPassword, showLogin, email, passwordHelper, emailHelper } = this.state;
+    const { password, showPassword, showLogin, username, passwordHelper, emailHelper } = this.state;
     const { classes } = this.props;
     // if (!showLogin) {
     //   return (
@@ -105,11 +105,11 @@ class LoginPage extends Component {
           <TextField
             variant="outlined"
             helperText={<span style={{ color: 'red', position: 'absolute' }}>{emailHelper}</span>}
-            id="email"
-            label="Email"
-            name="email"
-            value={email}
-            onChange={this.handleChange('email')}
+            id="username"
+            label="Username"
+            name="username"
+            value={username}
+            onChange={this.handleChange('username')}
             className={classes.textField}
             fullWidth
             margin="normal"

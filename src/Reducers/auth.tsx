@@ -6,7 +6,7 @@ const initialState: IInitialState = {
   prePath: '',
   loginSuccess: false,
   token: localStorage.getItem('token'),
-  user: null,
+  customer: null,
   isLoading: false,
   email: '',
 };

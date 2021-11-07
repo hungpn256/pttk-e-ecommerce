@@ -23,22 +23,28 @@ import styles from './styles';
 import * as actionsAuthen from '../../Actions/authentication';
 import cn from 'classname';
 import { toast } from 'react-toastify';
-import * as H from './../../Helper/Validate';
+import * as H from '../../Helper/Validate';
+import { Customer } from '../../models/customer';
 class SignUp extends Component {
   state = {
-    phoneNumber: '',
+    mobile: '',
     password: '',
     firstName: '',
+    midName: '',
     lastName: '',
     username: '',
     cPassword: '',
     email: '',
-    phoneNumberHelper: '',
+    mobileHelper: '',
     passwordHelper: '',
     firstNameHelper: '',
     lastNameHelper: '',
     usernameHelper: '',
     emailHelper: '',
+    number: 0,
+    street: '',
+    district: '',
+    city: '',
     showPassword: false,
     showLogin: false,
   };
@@ -57,46 +63,81 @@ class SignUp extends Component {
     e.preventDefault();
     const { actionsAuthen } = this.props;
     const { signup } = actionsAuthen;
-    const { firstName, lastName, username, cPassword, email, password, phoneNumber } = this.state;
+    const {
+      firstName,
+      midName,
+      lastName,
+      username,
+      cPassword,
+      email,
+      password,
+      mobile,
+      number,
+      street,
+      district,
+      city,
+    } = this.state;
     let check = true;
-    if (H.isEmpty.check(firstName)) {
-      this.setState({ firstNameHelper: H.isEmpty.messenger });
-      check = false;
+    // if (H.isEmpty.check(firstName)) {
+    //   this.setState({ firstNameHelper: H.isEmpty.messenger });
+    //   check = false;
+    // }
+    // if (H.isEmpty.check(lastName)) {
+    //   this.setState({ lastNameHelper: H.isEmpty.messenger });
+    //   check = false;
+    // }
+    // if (H.isEmpty.check(mobile)) {
+    //   this.setState({ mobileHelper: H.isEmpty.messenger });
+    //   check = false;
+    // }
+    // if (H.isEmpty.check(username)) {
+    //   this.setState({ usernameHelper: H.isEmpty.messenger });
+    //   check = false;
+    // }
+    // if (H.isEmpty.check(email)) {
+    //   this.setState({ emailHelper: H.isEmpty.messenger });
+    //   check = false;
+    // } else {
+    //   if (!H.email.check(email)) {
+    //     this.setState({ emailHelper: H.email.messenger });
+    //     check = false;
+    //   }
+    // }
+    // if (H.isEmpty.check(password)) {
+    //   this.setState({ passwordHelper: H.isEmpty.messenger });
+    //   check = false;
+    // } else {
+    //   if (H.min6.check(password)) {
+    //     this.setState({ passwordHelper: H.min6.messenger });
+    //     check = false;
+    //   } else if (cPassword !== password) {
+    //     this.setState({ passwordHelper: 'Password chưa trùng khớp' });
+    //     check = false;
+    //   }
+    // }
+    if (check) {
+      let customer: Customer = {
+        fullName: {
+          firstName,
+          midName,
+          lastName,
+        },
+        account: {
+          username,
+          password,
+        },
+        email,
+        mobile,
+        address: {
+          number,
+          street,
+          district,
+          city,
+        },
+      };
+
+      signup(customer);
     }
-    if (H.isEmpty.check(lastName)) {
-      this.setState({ lastNameHelper: H.isEmpty.messenger });
-      check = false;
-    }
-    if (H.isEmpty.check(phoneNumber)) {
-      this.setState({ phoneNumberHelper: H.isEmpty.messenger });
-      check = false;
-    }
-    if (H.isEmpty.check(username)) {
-      this.setState({ usernameHelper: H.isEmpty.messenger });
-      check = false;
-    }
-    if (H.isEmpty.check(email)) {
-      this.setState({ emailHelper: H.isEmpty.messenger });
-      check = false;
-    } else {
-      if (!H.email.check(email)) {
-        this.setState({ emailHelper: H.email.messenger });
-        check = false;
-      }
-    }
-    if (H.isEmpty.check(password)) {
-      this.setState({ passwordHelper: H.isEmpty.messenger });
-      check = false;
-    } else {
-      if (H.min6.check(password)) {
-        this.setState({ passwordHelper: H.min6.messenger });
-        check = false;
-      } else if (cPassword !== password) {
-        this.setState({ passwordHelper: 'Password chưa trùng khớp' });
-        check = false;
-      }
-    }
-    if (check) signup({ name: { firstName, lastName }, username, email, password, phoneNumber });
   };
 
   render() {
@@ -109,7 +150,7 @@ class SignUp extends Component {
       firstNameHelper,
       lastNameHelper,
       emailHelper,
-      phoneNumberHelper,
+      mobileHelper,
       usernameHelper,
     } = this.state;
     const { classes, auth } = this.props;
@@ -120,16 +161,28 @@ class SignUp extends Component {
           <div className="text-xs-center pb-xs">
             <Typography variant="caption">Đăng ký tài khoản</Typography>
           </div>
+          <TextField
+            id="firstName"
+            helperText={
+              <span style={{ color: 'red', position: 'absolute' }}>{firstNameHelper}</span>
+            }
+            label="First name"
+            variant="outlined"
+            className={classes.textField}
+            onChange={this.handleChange('firstName')}
+            margin="normal"
+            fullWidth
+          ></TextField>
           <div className={classes.fullName}>
             <TextField
               id="firstName"
               helperText={
                 <span style={{ color: 'red', position: 'absolute' }}>{firstNameHelper}</span>
               }
-              label="First name"
+              label="Middle name"
               variant="outlined"
               className={classes.textField}
-              onChange={this.handleChange('firstName')}
+              onChange={this.handleChange('midName')}
               style={{ width: '45%' }}
               margin="normal"
             ></TextField>
@@ -169,17 +222,68 @@ class SignUp extends Component {
             margin="normal"
           ></TextField>
           <TextField
-            id="phoneNumber"
-            helperText={
-              <span style={{ color: 'red', position: 'absolute' }}>{phoneNumberHelper}</span>
-            }
+            id="mobile"
+            helperText={<span style={{ color: 'red', position: 'absolute' }}>{mobileHelper}</span>}
             variant="outlined"
             label="Phone number"
             className={classes.textField}
-            onChange={this.handleChange('phoneNumber')}
+            onChange={this.handleChange('mobile')}
             fullWidth
             margin="normal"
           ></TextField>
+          <div className={classes.fullName}>
+            <TextField
+              id="number"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{firstNameHelper}</span>
+              }
+              label="number"
+              variant="outlined"
+              className={classes.textField}
+              onChange={this.handleChange('number')}
+              style={{ width: '45%' }}
+              margin="normal"
+            ></TextField>
+            <TextField
+              id="street"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{lastNameHelper}</span>
+              }
+              label="Street"
+              variant="outlined"
+              className={classes.textField}
+              onChange={this.handleChange('street')}
+              style={{ width: '45%' }}
+              margin="normal"
+            ></TextField>
+          </div>
+          <div className={classes.fullName}>
+            <TextField
+              id="district"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{firstNameHelper}</span>
+              }
+              label="District"
+              variant="outlined"
+              className={classes.textField}
+              onChange={this.handleChange('district')}
+              style={{ width: '45%' }}
+              margin="normal"
+            ></TextField>
+            <TextField
+              id="city"
+              helperText={
+                <span style={{ color: 'red', position: 'absolute' }}>{lastNameHelper}</span>
+              }
+              label="City"
+              variant="outlined"
+              className={classes.textField}
+              onChange={this.handleChange('city')}
+              style={{ width: '45%' }}
+              margin="normal"
+            ></TextField>
+          </div>
+
           <div style={{ position: 'relative' }}>
             <TextField
               variant="outlined"
