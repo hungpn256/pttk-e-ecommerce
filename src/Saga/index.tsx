@@ -6,6 +6,7 @@ import * as constantsAuthentication from '../Constants/authentication';
 import * as actionsAuthen from './../Actions/authentication';
 import servicesPublic from '../Service/public';
 import axios from 'axios';
+import { Customer } from '../models/customer';
 function* fetchProductListSaga({ payload }) {
   try {
     yield put(actionsProduct.changeStates({ isLoadingProduct: true }));
@@ -75,12 +76,15 @@ function* loginSaga({ payload }: { payload: any }) {
   try {
     yield put(actionsAuthen.showLoading());
     const res = yield call(servicesPublic.login, payload);
-    const user = res?.data?.data ?? '';
+
+    const customer = res?.data?.customer ?? '';
+    const token = res?.data?.token;
     debugger;
-    if (user) {
-      // localStorage.setItem('token', token);
-      yield put(actionsAuthen.loginSuccess({ user }));
-      yield put(actionsAuthen.getUser());
+    if (customer) {
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token')}`;
+
+      yield put(actionsAuthen.loginSuccess({ customer, token }));
     }
   } catch (e) {
     yield put(actionsAuthen.loginFail(e));
@@ -91,7 +95,7 @@ function* loginSaga({ payload }: { payload: any }) {
   }
 }
 
-function* signUpSaga({ payload }) {
+function* signUpSaga({ payload }: { payload: Customer }) {
   try {
     yield put(actionsAuthen.showLoading());
     console.log('start');

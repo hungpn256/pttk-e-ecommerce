@@ -14,10 +14,10 @@ class ServicesProduct {
     return await axios.get(`${url}/product/search`, { params: { name: payload } });
   };
   login = async (payload: object) => {
-    return await axios.post(`${url}/api/auth/login/`, payload);
+    return await axios.post(`${url}/auth/login/`, payload);
   };
   signUp = async (payload: object) => {
-    return await axios.post(`${url}/auth/signup`, payload);
+    return await axios.post(`${url}/auth/register`, payload);
   };
   getUser = async () => {
     return await axios.get(`${url}/auth/profile`);

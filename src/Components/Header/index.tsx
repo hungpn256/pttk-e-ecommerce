@@ -29,7 +29,7 @@ const Header = ({ history }) => {
   const auth = useSelector((state) => state.auth);
   const product = useSelector((state) => state.product);
   const [keyword, setKeyword] = useState('');
-  const { user, isLoading } = auth;
+  const { customer, isLoading } = auth;
   const dispatch = useDispatch();
   const [y, setY] = useState(window.scrollY);
   const [stylesNav, setStylesNav] = useState({
@@ -128,7 +128,7 @@ const Header = ({ history }) => {
             </li>
             <li
               className={cn(classes.item, classes.hasLineRight)}
-              style={{ display: !user ? 'block' : 'none' }}
+              style={{ display: !customer ? 'block' : 'none' }}
             >
               <Link
                 onClick={() => {
@@ -140,7 +140,7 @@ const Header = ({ history }) => {
                 Đăng nhập
               </Link>
             </li>
-            <li className={classes.item} style={{ display: !user ? 'block' : 'none' }}>
+            <li className={classes.item} style={{ display: !customer ? 'block' : 'none' }}>
               <Link
                 onClick={() => {
                   dispatch(actionsAuth.changeStates({ prePath: history.location.pathname }));
@@ -153,14 +153,14 @@ const Header = ({ history }) => {
             </li>
             <li
               className={cn(classes.item)}
-              style={{ display: user ? 'flex' : 'none', padding: 0, alignItems: 'flex-start' }}
+              style={{ display: customer ? 'flex' : 'none', padding: 0, alignItems: 'flex-start' }}
             >
               <Link className={classes.itemLink} to="/heh">
                 <AccountCircleIcon
                   className={classes.icon}
                   style={{ fontSize: 25, padding: 0, margin: '0 2px' }}
                 />
-                <span>{user && user?.name?.firstName}</span>
+                <span>{customer && customer?.fullName?.firstName}</span>
               </Link>
               <ArrowDropDownIcon
                 className={classes.icon}
