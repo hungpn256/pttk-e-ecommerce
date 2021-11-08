@@ -7,49 +7,29 @@ import * as actionsAuthen from './../Actions/authentication';
 import servicesPublic from '../Service/public';
 import axios from 'axios';
 import { Customer } from '../models/customer';
-function* fetchProductListSaga({ payload }) {
+function* fetchProductListSaga() {
   try {
     yield put(actionsProduct.changeStates({ isLoadingProduct: true }));
-    let payloadCurrent = payload;
-    if (!payload) {
-      payloadCurrent = yield select((state) => state.product.paging);
-    }
-    const res = yield call(servicesPublic.get, payloadCurrent);
-    const { Products, total } = res?.data;
+    const res = yield call(servicesPublic.get);
+    const product = res?.data;
     yield put({
       type: constantsProduct.FETCH_PRODUCT_SUCCESS,
-      payload: { listProduct: Products, total },
+      payload: { listProduct: product },
     });
-  } catch (e) {
+  } catch (e: any) {
     toast.error(e.message);
   } finally {
     yield put(actionsProduct.changeStates({ isLoadingProduct: false }));
   }
 }
-function* fetchProductListTypeSaga() {
-  try {
-    yield put(actionsProduct.changeStates({ isLoadingType: true }));
-    const res = yield call(servicesPublic.getType, {});
-    const { ProductTypes, total } = res?.data;
-    if (ProductTypes) {
-      yield put(actionsProduct.fetchProductListTypeSuccess(ProductTypes));
-    } else {
-      const { error } = res?.data;
-      yield put(actionsProduct.fetchProductListTypeFail(error));
-    }
-  } catch (e) {
-    toast.error(e.message);
-  } finally {
-    yield put(actionsProduct.changeStates({ isLoadingType: false }));
-  }
-}
+
 function* fetchProductDetailSaga({ payload }) {
   try {
     const { _id } = payload;
-    const res = yield call(servicesPublic.getProductDetail, _id);
-    const { Product } = res?.data;
-    if (Product) {
-      yield put(actionsProduct.fetchProductDetailSuccess(Product));
+    const res = yield call(servicesPublic.getBookItemDetail, _id);
+    const bookItem = res?.data;
+    if (bookItem) {
+      yield put(actionsProduct.fetchProductDetailSuccess(bookItem));
     } else {
       const { error } = res;
       yield put(actionsProduct.fetchProductDetailFail(error));
@@ -113,10 +93,12 @@ function* signUpSaga({ payload }: { payload: Customer }) {
 function* getUserSaga() {
   try {
     yield put(actionsAuthen.showLoading());
-    axios.defaults.headers.common['Authorization'] = `Beare ${localStorage.getItem('token')}`;
+    axios.defaults.headers.common['Authorization'] = `${localStorage.getItem('token')}`;
     const res = yield call(servicesPublic.getUser);
-    if (!!res.data.user) {
-      yield put(actionsAuthen.getUserSuccess(res.data));
+    if (!!res.data?.customer) {
+      const customer = res?.data?.customer ?? '';
+      const token = res?.data?.token;
+      yield put(actionsAuthen.loginSuccess({ customer, token }));
     } else {
       yield put(actionsAuthen.getUserFail({ message: 'lỗi đăng nhập' }));
     }
@@ -128,7 +110,6 @@ function* getUserSaga() {
 }
 function* rootSaga() {
   yield takeLatest(constantsProduct.FETCH_PRODUCT, fetchProductListSaga);
-  yield takeEvery(constantsProduct.FETCH_PRODUCT_TYPE, fetchProductListTypeSaga);
   yield takeEvery(constantsProduct.FETCH_PRODUCT_DETAIL, fetchProductDetailSaga);
   yield takeLatest(constantsProduct.SEARCH_PRODUCT_NAME, searchProductNameSaga);
   yield takeLatest(constantsAuthentication.LOGIN, loginSaga);

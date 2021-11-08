@@ -18,7 +18,7 @@ function App() {
   const dispatch = useDispatch();
   useEffect(() => {
     const token = localStorage.getItem('token');
-    axios.defaults.headers.common['Authorization'] = token ? `Bearer ${token}` : '';
+    axios.defaults.headers.common['Authorization'] = token ? `${token}` : '';
     console.log('getUser');
     dispatch(actionsAuth.getUser());
   }, []);

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const styles = makeStyles((theme) => ({
   product: {
     position: 'relative',
-    maxWidth: 190,
+    minWidth: 250,
     margin: 5,
     height: 285,
     '&:hover': {

@@ -1,8 +1,7 @@
 import * as typesProduct from '../Constants/product';
 import IProduct from './../Interfaces/product';
-export const fetchProductList = (payload: any) => ({
+export const fetchProductList = () => ({
   type: typesProduct.FETCH_PRODUCT,
-  payload,
 });
 
 export const fetchProductListSuccess = (listProduct: Array<IProduct>, total: number) => ({
@@ -35,9 +34,9 @@ export const fetchProductDetail = (_id: string) => ({
   payload: { _id },
 });
 
-export const fetchProductDetailSuccess = (productDetail: IProduct) => ({
+export const fetchProductDetailSuccess = (bookDetail: IProduct) => ({
   type: typesProduct.FETCH_PRODUCT_DETAIL_SUCCESS,
-  payload: { productDetail },
+  payload: bookDetail
 });
 
 export const fetchProductDetailFail = (err: object) => ({

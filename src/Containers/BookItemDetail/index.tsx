@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import * as producActions from './../../Actions/product';
+import * as producActions from '../../Actions/product';
 import styles from './styles';
 function NumberFormatCustom(props: NumberFormatCustomProps) {
   const { inputRef, onChange, ...other } = props;
@@ -32,7 +32,7 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
 }
 const ProductDetail = () => {
   const classes = styles();
-  const product = useSelector((state) => state.product.record);
+  const bookItem = useSelector((state) => state.product.record);
   const dispatch = useDispatch();
   const params: { _id: string } = useParams();
   const { _id } = params;
@@ -66,13 +66,13 @@ const ProductDetail = () => {
           <div className={classes.wrapperImageMain}>
             {check ? (
               <Fade in={check}>
-                <img src={product?.image} className={classes.imageMain} alt="" />
+                <img src={bookItem?.image} className={classes.imageMain} alt="" />
               </Fade>
             ) : (
               <>
                 <Skeleton className={classes.imageMain} />
                 <img
-                  src={product.image}
+                  src={bookItem.image}
                   style={{ display: 'none' }}
                   alt=""
                   onLoad={() => {
@@ -90,16 +90,9 @@ const ProductDetail = () => {
               </>
             ) : (
               <>
-                <h3 className={classes.nameProduct}>{product?.name}</h3>
-                <Rating
-                  className={classes.rating}
-                  value={product?.evaluation}
-                  readOnly
-                  precision={0.5}
-                  size="medium"
-                />
+                <h3 className={classes.nameProduct}>{bookItem?.book?.title}</h3>
                 <div className={classes.price}>
-                  {product?.price && format(product?.price, 0, 3)}
+                  {bookItem?.price && format(bookItem?.price, 0, 3)}
                   <span className={classes.vnd}>đ</span>
                 </div>
                 <Divider />

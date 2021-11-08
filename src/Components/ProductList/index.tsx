@@ -17,8 +17,8 @@ interface IProductList {
 const ProductList = ({ listProduct, total, onChangePage, paging }: IProductList) => {
   const classes = styles();
   function renderProducts(listProduct: Array<IProduct>) {
-    return listProduct.map((product, index) => {
-      return <Product product={product} key={index} />;
+    return listProduct.map((bookItem, index) => {
+      return <Product bookItem={bookItem} key={index} />;
     });
   }
   return (
@@ -34,7 +34,7 @@ const ProductList = ({ listProduct, total, onChangePage, paging }: IProductList)
             {total > paging?.limit && (
               <Pagination
                 className={classes.pagination}
-                count={Math.ceil(total / paging?.limit)}
+                count={Math.ceil(listProduct.length / 24)}
                 page={paging?.page ?? 1}
                 onChange={(event: React.ChangeEvent<unknown>, value: number) =>
                   onChangePage(event, value)

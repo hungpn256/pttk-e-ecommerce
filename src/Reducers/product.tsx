@@ -58,8 +58,7 @@ const reducer = (state = { ...initialState }, action: IAction) => {
       return { ...state, listProductType };
     }
     case typeProducts.FETCH_PRODUCT_DETAIL_SUCCESS: {
-      const { productDetail } = action.payload;
-      return { ...state, record: productDetail };
+      return { ...state, record: action.payload };
     }
     default: {
       return { ...state };

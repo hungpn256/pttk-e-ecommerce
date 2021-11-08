@@ -21,17 +21,17 @@ const Home = () => {
   const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
     setPaging({ ...paging, page: value });
   };
-  useEffect(() => {
-    const { fetchProductListType } = producActions;
-    dispatch(fetchProductListType());
-  }, []);
+  // useEffect(() => {
+  //   const { fetchProductListType } = producActions;
+  //   dispatch(fetchProductListType());
+  // }, []);
   useEffect(() => {
     const { fetchProductList, changeStates } = producActions;
-    dispatch(fetchProductList(paging));
+    dispatch(fetchProductList());
     return () => {
       dispatch(changeStates({ listProduct: [] }));
     };
-  }, [paging]);
+  }, []);
   const listProductCurrent = isLoadingProduct ? Array(24).fill({}) : listProduct;
   const listImage = [
     { image: 'https://cf.shopee.vn/file/a58eb76fc3d22916cd6948fd4dc50e08_xxhdpi' },
