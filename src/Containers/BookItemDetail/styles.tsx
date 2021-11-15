@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 const styles = makeStyles((theme) => ({
-  background: { background: '#f5f5f5', height: '100vh' },
+  background: { background: '#f5f5f5', minHeight: '100vh' },
   cardMain: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -84,6 +84,18 @@ const styles = makeStyles((theme) => ({
     width: 300,
     height: 50,
     marginTop: 10,
+  },
+  cardDes: {
+    marginTop: 20,
+    marginBottom: 20,
+    padding: '20px 0',
+    '& li': {
+      padding: '0 20px'
+    }
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 }));
 

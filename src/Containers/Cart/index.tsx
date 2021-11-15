@@ -1,46 +1,72 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import styles from './styles'
 import { Button } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
+import { GET_CURRENT_CART } from '../../Constants/order';
+import { useHistory } from 'react-router';
+import { CartItem } from '../../models/order';
+import { RootState } from '../../Reducers';
+import { Link } from 'react-router-dom';
 
 export default function Cart() {
   const classes = styles();
+  const dispatch = useDispatch();
+  const history = useHistory()
+  const listCartItem: CartItem[] = useSelector((state: RootState) => state.cart?.cart?.listCartItem);
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'firstName', headerName: 'First name', width: 200 },
-    { field: 'lastName', headerName: 'Last name', width: 200 },
     {
-      field: 'age',
-      headerName: 'Age',
+      field: 'id',
+      headerName: 'ID',
+      width: 100
+    },
+    {
+      field: 'image',
+      headerName: 'Image',
+      width: 120,
+      renderCell: (a: any) => {
+        console.log(a)
+        return <Link to={'/product/detail/' + a?.row?.bookItemID}><img src={a.row.image} width="100%" height="100%" style={{ objectFit: 'contain' }} ></img></Link>
+      }
+    },
+    { field: 'title', headerName: 'Name', width: 200 },
+    {
+      field: 'quantity',
+      headerName: 'Quantity',
       type: 'number',
-      width: 90,
+      width: 160,
     },
     {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
+      field: 'price',
+      headerName: 'Price',
       width: 160,
-      valueGetter: (params) =>
-        `${params.getValue(params.id, 'firstName') || ''} ${params.getValue(params.id, 'lastName') || ''
-        }`,
+    },
+    {
+      field: 'total',
+      headerName: 'sub total',
+      width: 160,
+      renderCell: (props: any) => {
+        return Math.round(props.row.price * props.row.quantity)
+      }
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
-  const change = (state) => {
-    console.log(state);
-
+  const rows = listCartItem?.map((item: any) => ({
+    id: item.id,
+    bookItemID: item.bookItem.id,
+    image: item.bookItem.image,
+    title: item.bookItem.book.title,
+    quantity: item.quantity,
+    price: item.bookItem.price
+  })) || []
+  const change = (state: any) => {
+    let listCartItemChecked = listCartItem.filter((item: CartItem) => {
+      return state.includes(item.id)
+    });
+    localStorage.setItem('listCart', JSON.stringify(listCartItemChecked))
+  }
+  const onSubmit = () => {
+    history.push('/order');
   }
   return (
     <div className={classes['cart']}>
@@ -56,7 +82,7 @@ export default function Cart() {
           onSelectionModelChange={change}
         />
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button style={{ margin: '12px 0' }} variant="contained">Thanh toán</Button>
+          <Button style={{ margin: '12px 0' }} variant="contained" onClick={onSubmit}>Giao hàng</Button>
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Fade, TextField, Typography } from '@material-ui/core';
+import { Button, Card, Container, Divider, Fade, List, TextField, Typography } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
 import { Rating, Skeleton } from '@material-ui/lab';
@@ -9,9 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import * as producActions from '../../Actions/product';
 import styles from './styles';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { ADD_TO_CART } from '../../Constants/order';
+import { useHistory } from 'react-router'
+import { RootState } from '../../Reducers';
 function NumberFormatCustom(props: NumberFormatCustomProps) {
   const { inputRef, onChange, ...other } = props;
-
   return (
     <NumberFormat
       {...other}
@@ -32,12 +36,12 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
 }
 const ProductDetail = () => {
   const classes = styles();
-  const bookItem = useSelector((state) => state.product.record);
+  const bookItem = useSelector((state: RootState) => state.product.record);
   const dispatch = useDispatch();
   const params: { _id: string } = useParams();
   const { _id } = params;
   const [check, setCheck] = useState(false);
-  const [values, setValues] = React.useState(0);
+  const [values, setValues] = React.useState(1);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (parseInt(event.target.value) <= 0 || event.target.value.indexOf('-') !== -1) setValues(0);
     else setValues(parseInt(event.target.value));
@@ -59,6 +63,22 @@ const ProductDetail = () => {
     const re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
     return number.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
   };
+  const cart = useSelector((state: any) => state.cart?.cart);
+  const history = useHistory()
+  const onBuy = () => {
+    if (!cart) {
+      history.push('/login')
+    }
+    else {
+      dispatch({
+        type: ADD_TO_CART, payload: {
+          quantity: values,
+          cardID: cart.id,
+          bookItemID: bookItem.id
+        }
+      })
+    }
+  }
   return (
     <div className={classes.background}>
       <div className={cn('container')}>
@@ -137,9 +157,7 @@ const ProductDetail = () => {
                   className={classes.btnBuy}
                   variant="contained"
                   color="secondary"
-                  onClick={() => {
-                    setValues(values + 1);
-                  }}
+                  onClick={onBuy}
                 >
                   Chọn mua
                 </Button>
@@ -147,6 +165,41 @@ const ProductDetail = () => {
             )}
           </div>
         </Card>
+
+        {bookItem?.book && <Card className={classes.cardDes}>
+          <Container>
+            <h3 className={classes.title}>Mô tả</h3>
+            <List component="nav" aria-label="contacts">
+              {Object.keys(bookItem?.book).map((key) => {
+                console.log(key, 'key');
+                if (key === 'id') return;
+                if (typeof bookItem?.book[key] !== 'object')
+                  return <ListItem>
+                    <ListItemText primary={`${key}: ${bookItem?.book[key]}`} />
+                  </ListItem>
+                else {
+                  return <>
+                    <ListItem>
+                      <ListItemText primary={`${key}:`} />
+                    </ListItem>
+                    <Container>
+                      <List component="nav" aria-label="contacts">
+                        {Object.keys(bookItem?.book[key]).map((key2) => {
+                          if (typeof bookItem?.book[key][key2] !== 'object' && key2 !== 'id')
+                            return <ListItem>
+                              <ListItemText primary={`${key2}: ${bookItem?.book[key][key2]}`} />
+                            </ListItem>
+                        })
+                        }
+                      </List>
+                    </Container></>
+                }
+              })
+              }
+            </List>
+          </Container>
+        </Card>}
+
       </div>
     </div>
   );

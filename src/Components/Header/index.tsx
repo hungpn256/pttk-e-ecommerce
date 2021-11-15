@@ -1,4 +1,4 @@
-import { Button, Card, IconButton, InputBase, Menu, MenuItem, Paper } from '@material-ui/core';
+import { Badge, Button, Card, IconButton, InputBase, Menu, MenuItem, Paper } from '@material-ui/core';
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -20,14 +20,12 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import qs from 'query-string';
 import product from '../../Reducers/product';
-interface IHeader {
-  listProductSearch: Array<IProduct>;
-  isSearching: boolean;
-}
+import { RootState } from '../../Reducers';
+
 const Header = ({ history }) => {
-  const { listProductSearch, isSearching, paging }: IHeader = useSelector((state) => state.product);
+  const { listBookItemSearch, isSearching } = useSelector((state: RootState) => state.product);
   const auth = useSelector((state) => state.auth);
-  const product = useSelector((state) => state.product);
+  const listCartItem = useSelector((state: any) => state.cart?.cart?.listCartItem);
   const [keyword, setKeyword] = useState('');
   const { customer, isLoading } = auth;
   const dispatch = useDispatch();
@@ -175,7 +173,7 @@ const Header = ({ history }) => {
                 onClose={handleClose}
               >
                 <MenuItem>Profile</MenuItem>
-                <MenuItem>My account</MenuItem>
+                <MenuItem><Link style={{ textDecoration: 'none', color: 'black' }} to={'/my-order'}>My order</Link></MenuItem>
                 <MenuItem onClick={logOut}>Logout</MenuItem>
               </Menu>
             </li>
@@ -222,11 +220,11 @@ const Header = ({ history }) => {
                 ) : (
                   <>
                     <Card className={classes.cardSearch}>
-                      {listProductSearch.map((product, index) => {
-                        return <ProductSearch product={product} />;
+                      {listBookItemSearch.map((bookItem, index) => {
+                        return <ProductSearch bookItem={bookItem} />;
                       })}
                     </Card>
-                    {listProductSearch.length > 6 && (
+                    {listBookItemSearch.length > 6 && (
                       <div className={classes.showAll}>Xem thêm &gt;&gt;&gt;&gt;</div>
                     )}
                   </>
@@ -236,7 +234,9 @@ const Header = ({ history }) => {
           </div>
           <div className={classes.AddShoppingCart}>
             <Link to="/cart">
-              <AddShoppingCartIcon className={classes.AddShoppingCartIcon} />
+              <Badge badgeContent={listCartItem?.length ?? 0} color="error">
+                <AddShoppingCartIcon className={classes.AddShoppingCartIcon} />
+              </Badge>
             </Link>
           </div>
         </div>

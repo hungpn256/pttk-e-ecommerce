@@ -1,14 +1,22 @@
 import * as typesAuthentication from '../Constants/authentication';
+import { Customer } from '../models/customer';
 
-interface IInitialState {}
+export interface IInitialStateAuth {
+  prePath: string,
+  loginSuccess: boolean,
+  token: string,
+  customer?: Customer,
+  isLoading: boolean,
+  first: true
+}
 
-const initialState: IInitialState = {
+const initialState: IInitialStateAuth = {
   prePath: '',
   loginSuccess: false,
-  token: localStorage.getItem('token'),
-  customer: null,
+  token: localStorage.getItem('token') || '',
+  customer: undefined,
   isLoading: false,
-  email: '',
+  first: true
 };
 interface IAction {
   type: string;

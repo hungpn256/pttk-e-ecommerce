@@ -4,14 +4,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import CarouselComponent from '../../Components/Carousel';
 import ProductList from '../../Components/ProductList';
 import ProductTypeList from '../../Components/ProductTypeList';
+import { RootState } from '../../Reducers';
 import * as producActions from './../../Actions/product';
 import styles from './styles';
 
 const Home = () => {
   const classes = styles();
   const dispatch = useDispatch();
-  const { listProduct, listProductType, total, isLoadingProduct, isLoadingType } = useSelector(
-    (state) => state.product
+  const { listProduct, total, isLoadingProduct } = useSelector(
+    (state: RootState) => state.product
   );
   const [paging, setPaging] = React.useState({
     page: 1,
@@ -44,7 +45,7 @@ const Home = () => {
       <div className={cn('container', classes.content)}>
         <div className={classes.advertisement}>
           <div className={classes.carousel}>
-            <CarouselComponent options={{ stopAutoPlayOnHover: false }} listImage={listImage} />
+            <CarouselComponent listImage={listImage} />
           </div>
 
           <div className={classes.imageAdvertisement}>
@@ -54,12 +55,6 @@ const Home = () => {
               alt=""
             />
           </div>
-        </div>
-        <div className={classes.listProductType}>
-          <ProductTypeList
-            lineNumber={2}
-            listProductType={!isLoadingType ? listProductType : Array(20).fill({})}
-          />
         </div>
         <div className={classes.listProduct}>
           <ProductList

@@ -1,30 +1,17 @@
 import {
-  Button,
-  Card,
-  CardContent,
-  CircularProgress,
-  FormControl,
-  IconButton,
-  Input,
-  InputAdornment,
-  InputLabel,
-  TextField,
+  Button, CircularProgress, IconButton, TextField,
   Typography,
-  withStyles,
+  withStyles
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import cn from 'classname';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
-import Footer from '../../Components/Footer';
-import Logo from './../../Assets/logo.png';
-import styles from './styles';
 import * as actionsAuthen from '../../Actions/authentication';
-import cn from 'classname';
-import { toast } from 'react-toastify';
-import * as H from '../../Helper/Validate';
 import { Customer } from '../../models/customer';
+import styles from './styles';
 class SignUp extends Component {
   state = {
     mobile: '',
@@ -77,67 +64,26 @@ class SignUp extends Component {
       district,
       city,
     } = this.state;
-    let check = true;
-    // if (H.isEmpty.check(firstName)) {
-    //   this.setState({ firstNameHelper: H.isEmpty.messenger });
-    //   check = false;
-    // }
-    // if (H.isEmpty.check(lastName)) {
-    //   this.setState({ lastNameHelper: H.isEmpty.messenger });
-    //   check = false;
-    // }
-    // if (H.isEmpty.check(mobile)) {
-    //   this.setState({ mobileHelper: H.isEmpty.messenger });
-    //   check = false;
-    // }
-    // if (H.isEmpty.check(username)) {
-    //   this.setState({ usernameHelper: H.isEmpty.messenger });
-    //   check = false;
-    // }
-    // if (H.isEmpty.check(email)) {
-    //   this.setState({ emailHelper: H.isEmpty.messenger });
-    //   check = false;
-    // } else {
-    //   if (!H.email.check(email)) {
-    //     this.setState({ emailHelper: H.email.messenger });
-    //     check = false;
-    //   }
-    // }
-    // if (H.isEmpty.check(password)) {
-    //   this.setState({ passwordHelper: H.isEmpty.messenger });
-    //   check = false;
-    // } else {
-    //   if (H.min6.check(password)) {
-    //     this.setState({ passwordHelper: H.min6.messenger });
-    //     check = false;
-    //   } else if (cPassword !== password) {
-    //     this.setState({ passwordHelper: 'Password chưa trùng khớp' });
-    //     check = false;
-    //   }
-    // }
-    if (check) {
-      let customer: Customer = {
-        fullName: {
-          firstName,
-          midName,
-          lastName,
-        },
-        account: {
-          username,
-          password,
-        },
-        email,
-        mobile,
-        address: {
-          number,
-          street,
-          district,
-          city,
-        },
-      };
+    let customer: Customer = {
+      fullName: {
+        firstName,
+        midName,
+        lastName,
+      },
+      account: {
+        username,
+        password,
+      },
+      email,
+      mobile,
+      address: {
+        number,
+        street,
+        district,
+        city,
+      },
+    }; signup(customer);
 
-      signup(customer);
-    }
   };
 
   render() {

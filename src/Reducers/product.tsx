@@ -1,41 +1,25 @@
-import IProduct from '../Interfaces/product';
 import * as typeProducts from '../Constants/product';
-import { IProductType } from '../Components/ProductType';
-interface IInitialState {
-  listProduct: Array<IProduct>;
-  listProductType: Array<IProductType>;
-  total: number;
-  paging: {
-    limit: number;
-    page: number;
-    cond: object;
-    search?: string;
-  };
-  record: IProduct | {};
+import { BookItem } from '../models/book';
+export interface IInitialState {
+  listProduct: BookItem[]
+  record: BookItem | {};
   isLoadingProduct: boolean;
   isLoadingType: boolean;
-  listProductSearch: Array<IProduct>;
+  listBookItemSearch: Array<BookItem>;
   isSearching: boolean;
 }
 
 const initialState: IInitialState = {
   listProduct: [],
-  listProductType: [],
-  total: 0,
-  paging: {
-    limit: 24,
-    page: 1,
-    cond: {},
-  },
   record: {},
   isLoadingProduct: false,
   isLoadingType: false,
-  listProductSearch: [],
+  listBookItemSearch: [],
   isSearching: false,
 };
 interface IAction {
   type: string;
-  payload: IProduct;
+  payload: any;
 }
 const reducer = (state = { ...initialState }, action: IAction) => {
   switch (action.type) {
@@ -50,12 +34,12 @@ const reducer = (state = { ...initialState }, action: IAction) => {
       return { ...state };
     }
     case typeProducts.FETCH_PRODUCT_SUCCESS: {
-      const { listProduct, total } = action.payload;
-      return { ...state, listProduct, total };
+      const { listProduct } = action.payload;
+      return { ...state, listProduct };
     }
-    case typeProducts.FETCH_PRODUCT_TYPE_SUCCESS: {
-      const { listProductType } = action.payload;
-      return { ...state, listProductType };
+    case typeProducts.FETCH_PRODUCT_SUCCESS: {
+      const { listProduct } = action.payload;
+      return { ...state, listProduct };
     }
     case typeProducts.FETCH_PRODUCT_DETAIL_SUCCESS: {
       return { ...state, record: action.payload };

@@ -16,10 +16,11 @@ import * as actionsAuth from '../../Actions/authentication';
 
 function App() {
   const dispatch = useDispatch();
+  // const auth = useSelector((state: any) => state.auth);
+  // const { first } = auth;
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.defaults.headers.common['Authorization'] = token ? `${token}` : '';
-    console.log('getUser');
     dispatch(actionsAuth.getUser());
   }, []);
   const renderAdminRoutes = () => {
@@ -52,6 +53,7 @@ function App() {
         </Route>
       );
   };
+  // if (first) return <div>loading</div>;
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

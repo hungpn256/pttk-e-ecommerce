@@ -1,50 +1,82 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import styles from './styles'
 import { Button, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { CartItem, Payment, Shipment } from '../../models/order';
+import { useDispatch, useSelector } from 'react-redux';
+import { ADD_ORDER, GET_ALL_PAYMENT, GET_ALL_SHIPMENT } from '../../Constants/order';
+import { RootState } from '../../Reducers';
 
 export default function Order() {
   const classes = styles();
+  const [shipment, setShipment] = useState(-1);
+  const [payment, setPayment] = useState(-1);
+  const [listCartItem, setListCartItem] = useState([]);
+  const listPayment: Payment[] = useSelector((state: RootState) => state.cart.payment)
+  const cartID: number = useSelector((state: RootState) => state.cart?.cart?.id)
+  const listShipment: Shipment[] = useSelector((state: RootState) => state.cart.shipment)
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const l = JSON.parse(localStorage.getItem('listCart') || '');
+    setListCartItem(l);
+    dispatch({ type: GET_ALL_SHIPMENT })
+  }, [])
+  useEffect(() => {
+    shipment >= 0 && dispatch({ type: GET_ALL_PAYMENT, payload: shipment })
+  }, [shipment])
   const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'firstName', headerName: 'First name', width: 200 },
-    { field: 'lastName', headerName: 'Last name', width: 200 },
     {
-      field: 'age',
-      headerName: 'Age',
+      field: 'id',
+      headerName: 'ID',
+      width: 100
+    },
+    {
+      field: 'image',
+      headerName: 'Image',
+      width: 120,
+      renderCell: (a: any) => {
+        return <img src={a.row.image} width="100%" height="100%" style={{ objectFit: 'contain' }} ></img>
+      }
+    },
+    { field: 'title', headerName: 'Name', width: 200 },
+    {
+      field: 'quantity',
+      headerName: 'Quantity',
       type: 'number',
-      width: 90,
+      width: 160,
     },
     {
-      field: 'fullName',
-      headerName: 'Full name',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
+      field: 'price',
+      headerName: 'Price',
       width: 160,
-      valueGetter: (params) =>
-        `${params.getValue(params.id, 'firstName') || ''} ${params.getValue(params.id, 'lastName') || ''
-        }`,
+    },
+    {
+      field: 'total',
+      headerName: 'sub total',
+      width: 160,
+      renderCell: (props: any) => {
+        return props.row.price * props.row.quantity
+      }
     },
   ];
 
-  const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  ];
-  const change = (state) => {
-    console.log(state);
-
-  }
-  const handleChange = (event) => {
-    console.log(event.target.value);
+  const rows = listCartItem?.map((item: CartItem) => ({
+    id: item.id,
+    image: item.bookItem.image,
+    title: item.bookItem.book.title,
+    quantity: item.quantity,
+    price: item.bookItem.price
+  })) || []
+  const handleChangePayment = (event: any) => {
+    setPayment(event.target.value);
   };
+  const handleChangeShipment = (event: any) => {
+    setShipment(event.target.value);
+  };
+  const onSubmit = () => {
+    let payload = { listCartItem, cartID, paymentID: payment, shipmentID: shipment }
+    dispatch({ type: ADD_ORDER, payload })
+  }
   return (
     <div className={classes['cart']}>
       <div className={classes['cart__container']}>
@@ -55,46 +87,46 @@ export default function Order() {
           columns={columns}
           pageSize={6}
           rowsPerPageOptions={[6]}
-          onSelectionModelChange={change}
         />
         <div>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel id="demo-simple-select-outlined-label">Phương thức thanh toán</InputLabel>
-            <Select
-              className={classes['select']}
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              onChange={handleChange}
-              label="Phương thức thanh toán"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
           <FormControl variant="outlined" className={classes.formControl}>
             <InputLabel id="demo-simple-select-outlined-label">Ship</InputLabel>
             <Select
               className={classes['select']}
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
-              onChange={handleChange}
+              onChange={handleChangeShipment}
               label="Phương thức thanh toán"
+              value={shipment}
+              defaultValue={-1}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={-1}>Vui lòng chọn</MenuItem>
+              {listShipment && listShipment.map((item, index) => {
+                return <MenuItem value={item.id}>{item.supplier + ' ' + item.type + " " + item.price}</MenuItem>
+              })}
             </Select>
           </FormControl>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label">Phương thức thanh toán</InputLabel>
+            <Select
+              className={classes['select']}
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              onChange={handleChangePayment}
+              label="Phương thức thanh toán"
+              value={payment}
+            >
+              <MenuItem value={-1}>Vui lòng chọn</MenuItem>
+              {listPayment && listPayment.map((item, index) => {
+                return <MenuItem key={item.id} value={item.id}>{item.supplier || '' + ' ' + item.type}</MenuItem>
+              })}
+            </Select>
+          </FormControl>
+
         </div>
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Button style={{ margin: '12px 0' }} variant="contained">Thanh toán</Button>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+          <div style={{ marginRight: 10, fontSize: 24, fontWeight: 'bold', color: 'red' }}>{listCartItem && listCartItem.length && listCartItem?.reduce((priceTotal: number, item: any) => item.bookItem.price * item.quantity + priceTotal, 0)} đ</div>
+          <Button style={{ margin: '12px 0' }} variant="contained" onClick={onSubmit}>Thanh toán</Button>
         </div>
       </div>
     </div >

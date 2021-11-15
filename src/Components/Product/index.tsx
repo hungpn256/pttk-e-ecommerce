@@ -38,7 +38,7 @@ const Product = ({ bookItem }: ProductProps) => {
                 variant="body2"
                 color="textPrimary"
                 component="p"
-                className={classes.description}
+                className={classes.name}
               >
                 {title + ' '}
               </Typography>

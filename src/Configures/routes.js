@@ -9,6 +9,7 @@ import LayoutIncludeHeader from '../Layout/IncludeHeader';
 import AuthLayout from '../Layout/Authentication';
 import Cart from '../Containers/Cart';
 import Order from '../Containers/Order';
+import ListOrder from '../Containers/ListOrder';
 export const ROUTES = [
   {
     path: '/',
@@ -44,6 +45,13 @@ export const ROUTES = [
     exact: false,
     layout: LayoutIncludeHeader,
     component: Order,
+  },
+  {
+    path: '/my-order',
+    name: 'Loại Sản phẩm',
+    exact: false,
+    layout: LayoutIncludeHeader,
+    component: ListOrder,
   },
   {
     path: '/login',

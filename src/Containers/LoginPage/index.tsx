@@ -5,15 +5,13 @@ import {
   IconButton,
   TextField,
   Typography,
-  withStyles,
+  withStyles
 } from '@material-ui/core';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import {
   Favorite,
-  FavoriteBorder,
-  TransferWithinAStationSharp,
-  Visibility,
-  VisibilityOff,
+  FavoriteBorder, Visibility,
+  VisibilityOff
 } from '@material-ui/icons';
 import cn from 'classname';
 import React, { Component } from 'react';
@@ -22,8 +20,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { bindActionCreators, compose } from 'redux';
 import * as actionsAuthen from '../../Actions/authentication';
 import styles from './styles';
-import * as _ from 'lodash';
-import * as H from '../../Helper/Validate';
 class LoginPage extends Component {
   state = {
     password: '',
@@ -55,24 +51,6 @@ class LoginPage extends Component {
     const { actionsAuthen } = this.props;
     const { login } = actionsAuthen;
     let check = true;
-    // if (H.isEmpty.check(email)) {
-    //   this.setState({ emailHelper: H.isEmpty.messenger });
-    //   check = false;
-    // } else {
-    //   if (!H.email.check(email)) {
-    //     this.setState({ emailHelper: H.email.messenger });
-    //     check = false;
-    //   }
-    // }
-    // if (H.isEmpty.check(password)) {
-    //   this.setState({ passwordHelper: H.isEmpty.messenger });
-    //   check = false;
-    // } else {
-    //   if (H.min6.check(password)) {
-    //     this.setState({ passwordHelper: H.min6.messenger });
-    //     check = false;
-    //   }
-    // }
     if (check) login({ password, username });
   };
   render() {
@@ -83,19 +61,6 @@ class LoginPage extends Component {
     }
     const { password, showPassword, showLogin, username, passwordHelper, emailHelper } = this.state;
     const { classes } = this.props;
-    // if (!showLogin) {
-    //   return (
-    //     <img
-    //       style={{ display: 'none' }}
-    //       src={'https://whitehat.org.uk/about-values.0b4bad06.svg'}
-    //       alt=""
-    //       className={classes.backgroundImage}
-    //       onLoad={() => {
-    //         this.setState({ showLogin: true });
-    //       }}
-    //     ></img>
-    //   );
-    // }
     return (
       <>
         <form onSubmit={this.handleSubmit} autoComplete={false}>
