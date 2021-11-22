@@ -65,7 +65,7 @@ export default function Order() {
     image: item.bookItem.image,
     title: item.bookItem.book.title,
     quantity: item.quantity,
-    price: item.bookItem.price
+    price: Math.round(item.bookItem.price)
   })) || []
   const handleChangePayment = (event: any) => {
     setPayment(event.target.value);
@@ -125,7 +125,7 @@ export default function Order() {
 
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-          <div style={{ marginRight: 10, fontSize: 24, fontWeight: 'bold', color: 'red' }}>{listCartItem && listCartItem.length && listCartItem?.reduce((priceTotal: number, item: any) => item.bookItem.price * item.quantity + priceTotal, 0)} đ</div>
+          <div style={{ marginRight: 10, fontSize: 24, fontWeight: 'bold', color: 'red' }}>{listCartItem && listCartItem.length && Math.round(listCartItem?.reduce((priceTotal: number, item: any) => item.bookItem.price * item.quantity + priceTotal, 0))} đ</div>
           <Button style={{ margin: '12px 0' }} variant="contained" onClick={onSubmit}>Thanh toán</Button>
         </div>
       </div>

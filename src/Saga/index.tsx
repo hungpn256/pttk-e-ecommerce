@@ -14,7 +14,7 @@ function* fetchProductListSaga() {
   try {
     yield put(actionsProduct.changeStates({ isLoadingProduct: true }));
     const res: { data: BookItem[] } = yield call(servicesPublic.get);
-    const product = res?.data;
+    const product = res?.data.reverse();
     yield put({
       type: constantsProduct.FETCH_PRODUCT_SUCCESS,
       payload: { listProduct: product },

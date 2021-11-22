@@ -57,7 +57,7 @@ export default function Cart() {
     image: item.bookItem.image,
     title: item.bookItem.book.title,
     quantity: item.quantity,
-    price: item.bookItem.price
+    price: Math.round(item.bookItem.price)
   })) || []
   const change = (state: any) => {
     let listCartItemChecked = listCartItem.filter((item: CartItem) => {

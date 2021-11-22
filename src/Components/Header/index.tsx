@@ -174,6 +174,7 @@ const Header = ({ history }) => {
               >
                 <MenuItem>Profile</MenuItem>
                 <MenuItem><Link style={{ textDecoration: 'none', color: 'black' }} to={'/my-order'}>My order</Link></MenuItem>
+                <MenuItem><a style={{ textDecoration: 'none', color: 'black' }} href={'/admin'}>Admin</a></MenuItem>
                 <MenuItem onClick={logOut}>Logout</MenuItem>
               </Menu>
             </li>

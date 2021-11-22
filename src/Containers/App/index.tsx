@@ -10,7 +10,6 @@ import { ROUTES } from '../../Configures/routes';
 import axios from 'axios';
 import styles from './styles';
 import theme from './themes';
-import MessengerCustomerChat from 'react-messenger-customer-chat';
 
 import * as actionsAuth from '../../Actions/authentication';
 
@@ -43,7 +42,6 @@ function App() {
           <Layout history={history}>
             <Component></Component>
           </Layout>
-          <MessengerCustomerChat pageId="105600471535776" appId="530387607688652" />
         </Route>
       );
     } else

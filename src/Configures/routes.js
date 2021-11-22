@@ -10,6 +10,7 @@ import AuthLayout from '../Layout/Authentication';
 import Cart from '../Containers/Cart';
 import Order from '../Containers/Order';
 import ListOrder from '../Containers/ListOrder';
+import Admin from '../Containers/Admin';
 export const ROUTES = [
   {
     path: '/',
@@ -59,6 +60,11 @@ export const ROUTES = [
     exact: true,
     layout: AuthLayout,
     component: LoginPage,
+  },
+  {
+    path: '/admin',
+    name: 'Đăng nhập',
+    component: Admin,
   },
   {
     path: '/signup',

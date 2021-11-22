@@ -1,8 +1,21 @@
 import axios from 'axios';
 import { url } from '../Configures/ip';
+import { BookItem } from '../models/book';
 class ServicesProduct {
   get = async (payload?: { key: string }) => {
     return await axios.get(`${url}/book/book-item`, { params: { ...payload } });
+  };
+  postBook = async (payload: any) => {
+    return await axios.post(`${url}/book/book-item`, payload);
+  };
+  getElectronic = async (payload?: { key: string }) => {
+    return await axios.get(`${url}/electronic/electronic-item`, { params: { ...payload } });
+  };
+  getClothes = async (payload?: { key: string }) => {
+    return await axios.get(`${url}/clothes/clothes-item`, { params: { ...payload } });
+  };
+  getShoes = async (payload?: { key: string }) => {
+    return await axios.get(`${url}/shoes/shoes-item`, { params: { ...payload } });
   };
   getType = async (payload: object) => {
     return await axios.get(`${url}/product-type`, { params: payload });
